@@ -20,7 +20,11 @@ import { UsersModule } from './users/users.module';
       load: [appConfig, dbConfig],
     }),
     // Databases
-    SequelizeModule.forRoot(dbConfig().postgres),
+    SequelizeModule.forRoot({
+      ...dbConfig().postgres,
+      synchronize: true,
+      autoLoadModels: true,
+    }),
     // Modules
     UsersModule,
     AuthModule,
