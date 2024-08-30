@@ -6,8 +6,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import appConfig, { appValidationSchema } from './config/app.config';
+import authConfig, { authValidationSchema } from './config/auth.config';
 import dbConfig, { dbValidationSchema } from './config/db.config';
 import { UsersModule } from './users/users.module';
+import { UtilsProvider } from './utils/utils.provider';
 
 @Module({
   imports: [
@@ -16,8 +18,9 @@ import { UsersModule } from './users/users.module';
       validationSchema: Joi.object({
         ...appValidationSchema,
         ...dbValidationSchema,
+        ...authValidationSchema,
       }),
-      load: [appConfig, dbConfig],
+      load: [appConfig, dbConfig, authConfig],
     }),
     // Databases
     SequelizeModule.forRoot({
@@ -30,6 +33,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UtilsProvider],
+  exports: [UtilsProvider],
 })
 export class AppModule {}
