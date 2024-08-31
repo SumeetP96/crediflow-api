@@ -2,6 +2,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
+
 async function hash(plaintextPassword) {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(plaintextPassword, salt);
