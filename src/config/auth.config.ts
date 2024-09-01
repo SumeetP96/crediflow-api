@@ -13,6 +13,7 @@ export const authValidationSchema = {
 };
 
 const { env } = process;
+
 export default (): AuthConfig => ({
   jwtSecret: env.JWT_SECRET,
   jwtExpiry: env.JWT_EXPIRY,

@@ -19,8 +19,8 @@ export class UsersService {
     return this.userModel.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findById(id: number) {
+    return this.userModel.findByPk(id);
   }
 
   async findByUsername(username: string): Promise<User> {

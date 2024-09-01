@@ -11,6 +11,7 @@ export const appValidationSchema = {
 };
 
 const { env } = process;
+
 export default (): AppConfig => ({
   env: env.NODE_ENV,
   port: parseInt(env.NODE_PORT, 10) || 3000,

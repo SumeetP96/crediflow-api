@@ -7,11 +7,13 @@ import { UtilsProvider } from 'src/utils/utils.provider';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
+import { LocalStrategy } from './local.strategy';
 
 @Module({
   imports: [
-    PassportModule,
+    UsersModule,
     ConfigModule,
+    PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -22,9 +24,8 @@ import { JwtStrategy } from './jwt.strategy';
       }),
       inject: [ConfigService],
     }),
-    UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, UtilsProvider],
+  providers: [AuthService, JwtStrategy, LocalStrategy, UtilsProvider],
 })
 export class AuthModule {}
