@@ -6,7 +6,7 @@ export const updateUserSchema = z
     username: z.string().min(3).max(50).optional(),
     password: z.string().optional(),
     confirmPassword: z.string().optional(),
-    role: z.enum(['admin', 'employee']).optional(),
+    role: z.enum(['super-admin', 'admin', 'employee']).optional(),
     status: z.enum(['active', 'inactive']).optional(),
   })
   .refine(

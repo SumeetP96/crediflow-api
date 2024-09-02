@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
-import { User } from './entities/user.model';
-import { UserTransformService } from './user-transform.service';
+import { UserTransformService } from './services/user-transform.service';
+import { UsersService } from './services/users.service';
+import { User } from './user.entity';
 import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
 
 @Module({
   imports: [SequelizeModule.forFeature([User])],

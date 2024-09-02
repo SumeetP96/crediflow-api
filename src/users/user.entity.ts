@@ -1,4 +1,5 @@
 import { Column, Model, Table } from 'sequelize-typescript';
+import { UserRole, UserStatus } from './user.interfaces';
 
 @Table({
   tableName: 'users',
@@ -14,12 +15,12 @@ export class User extends Model {
   password: string;
 
   @Column
-  role: 'super_admin' | 'admin' | 'employee';
+  role: UserRole;
 
   @Column({
     defaultValue: 'active',
   })
-  status: 'active' | 'inactive' | 'deleted';
+  status: UserStatus;
 
   @Column({
     defaultValue: null,

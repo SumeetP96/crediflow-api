@@ -13,8 +13,8 @@ import { AllExceptionsFilter } from 'src/common/exception-filters/all-exception.
 import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
 import { CreateUserDto, createUserSchema } from './dto/create-user.dto';
 import { UpdateUserDto, updateUserSchema } from './dto/update-user.dto';
-import { UserTransformService } from './user-transform.service';
-import { UsersService } from './users.service';
+import { UserTransformService } from './services/user-transform.service';
+import { UsersService } from './services/users.service';
 
 @Controller('users')
 export class UsersController {

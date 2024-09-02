@@ -7,14 +7,14 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
-import { UserTransformService } from 'src/users/user-transform.service';
-import { UsersService } from 'src/users/users.service';
-import { AuthService } from './auth.service';
-import { signInSchema } from './dto/login-dto';
+import { UserTransformService } from 'src/users/services/user-transform.service';
+import { UsersService } from 'src/users/services/users.service';
+import { Public } from './decorators/public.decorator';
 import { RequestWithDbUser, RequestWithJwtParsedUser } from './dto/request-dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { LocalAuthGuard } from './local-auth.guard';
-import { Public } from './public.decorator';
+import { signInSchema } from './dto/signin-dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { AuthService } from './services/auth.service';
 
 @Controller('auth')
 export class AuthController {

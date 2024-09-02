@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User } from 'src/users/entities/user.model';
+import { User } from 'src/users/user.entity';
 
 export interface JwtParsedUser {
   id: number;
