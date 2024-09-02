@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UtilsProvider } from 'src/utils/utils.provider';
 import { User } from './entities/user.model';
+import { UserTransformService } from './user-transform.service';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -11,11 +13,10 @@ import { UsersService } from './users.service';
   controllers: [UsersController],
   providers: [
     UsersService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    UserTransformService,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    UtilsProvider,
   ],
-  exports: [UsersService],
+  exports: [UsersService, UserTransformService],
 })
 export class UsersModule {}

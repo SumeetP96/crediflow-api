@@ -6,7 +6,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { TransformUserService } from 'src/users/transform-user.service';
+import { UserTransformService } from 'src/users/user-transform.service';
 import { UsersService } from 'src/users/users.service';
 import { ZodValidationPipe } from 'src/zod-validation.pipe';
 import { AuthService } from './auth.service';
@@ -14,18 +14,20 @@ import { signInSchema } from './dto/login-dto';
 import { RequestWithDbUser, RequestWithJwtParsedUser } from './dto/request-dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
+import { Public } from './public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
-    private readonly transformUserService: TransformUserService,
+    private readonly userTransformService: UserTransformService,
   ) {}
 
   @Post('login')
+  @Public()
   @UseGuards(LocalAuthGuard)
-  @UsePipes(new ZodValidationPipe(signInSchema))
+  @UsePipes(new ZodValidationPipe({ body: signInSchema }))
   signIn(@Request() req: RequestWithDbUser) {
     return this.authService.signIn(req.user);
   }
@@ -33,7 +35,7 @@ export class AuthController {
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req: RequestWithJwtParsedUser) {
-    return this.transformUserService.transformUser(
+    return this.userTransformService.transform(
       await this.userService.findById(req.user.id),
     );
   }

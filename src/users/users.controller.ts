@@ -6,41 +6,58 @@ import {
   Param,
   Patch,
   Post,
+  UseFilters,
+  UsePipes,
 } from '@nestjs/common';
-import { Public } from 'src/auth/public.decorator';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { AllExceptionsFilter } from 'src/all-exception.filter';
+import { ZodValidationPipe } from 'src/zod-validation.pipe';
+import { CreateUserDto, createUserSchema } from './dto/create-user.dto';
+import { UpdateUserDto, updateUserSchema } from './dto/update-user.dto';
+import { UserTransformService } from './user-transform.service';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly userTransformService: UserTransformService,
+  ) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @UsePipes(new ZodValidationPipe({ body: createUserSchema }))
+  @UseFilters(AllExceptionsFilter)
+  async create(@Body() createUserDto: CreateUserDto) {
+    return this.userTransformService.transform(
+      await this.usersService.create(createUserDto),
+    );
   }
 
   @Get()
-  @Public()
-  findAll() {
-    return this.usersService.findAll({
+  @UseFilters(AllExceptionsFilter)
+  async findAll() {
+    return await this.usersService.findAll({
       attributes: { exclude: ['password'] },
     });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.usersService.findById(+id);
+  @UseFilters(AllExceptionsFilter)
+  async findOne(@Param('id') id: number) {
+    return this.userTransformService.transform(
+      await this.usersService.findById(id),
+    );
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @UsePipes(new ZodValidationPipe({ body: updateUserSchema }))
+  @UseFilters(AllExceptionsFilter)
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    return await this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.usersService.softDelete(id);
+  @UseFilters(AllExceptionsFilter)
+  async softDelete(@Param('id') id: number) {
+    return await this.usersService.softDelete(id);
   }
 }

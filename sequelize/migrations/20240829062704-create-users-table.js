@@ -9,19 +9,42 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      name: Sequelize.STRING,
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       username: {
         type: Sequelize.STRING,
         unique: true,
+        allowNull: false,
       },
-      password: Sequelize.STRING,
-      role: Sequelize.ENUM('super_admin', 'admin', 'employee'),
-      status: Sequelize.ENUM('active', 'inactive', 'deleted'),
-      createdAt: Sequelize.DATE,
-      updatedAt: Sequelize.DATE,
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      role: {
+        type: Sequelize.ENUM('super_admin', 'admin', 'employee'),
+        allowNull: false,
+      },
+      status: {
+        type: Sequelize.ENUM('active', 'inactive', 'deleted'),
+        allowNull: false,
+        defaultValue: 'active',
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW'),
+      },
       deletedAt: {
         type: Sequelize.DATE,
         allowNull: true,
+        defaultValue: null,
       },
     });
   },

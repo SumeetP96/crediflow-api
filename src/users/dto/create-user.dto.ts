@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const createUserDto = z
+export const createUserSchema = z
   .object({
     name: z.string(),
     username: z.string().min(3).max(50),
@@ -9,6 +9,9 @@ export const createUserDto = z
     role: z.enum(['super_admin', 'admin', 'employee']),
     status: z.enum(['active', 'inactive', 'deleted']),
   })
-  .required();
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
-export type CreateUserDto = z.infer<typeof createUserDto>;
+export type CreateUserDto = z.infer<typeof createUserSchema>;
