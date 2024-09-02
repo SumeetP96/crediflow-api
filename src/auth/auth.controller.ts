@@ -6,9 +6,9 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
 import { UserTransformService } from 'src/users/user-transform.service';
 import { UsersService } from 'src/users/users.service';
-import { ZodValidationPipe } from 'src/zod-validation.pipe';
 import { AuthService } from './auth.service';
 import { signInSchema } from './dto/login-dto';
 import { RequestWithDbUser, RequestWithJwtParsedUser } from './dto/request-dto';

@@ -9,8 +9,8 @@ import {
   UseFilters,
   UsePipes,
 } from '@nestjs/common';
-import { AllExceptionsFilter } from 'src/all-exception.filter';
-import { ZodValidationPipe } from 'src/zod-validation.pipe';
+import { AllExceptionsFilter } from 'src/common/exception-filters/all-exception.filter';
+import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
 import { CreateUserDto, createUserSchema } from './dto/create-user.dto';
 import { UpdateUserDto, updateUserSchema } from './dto/update-user.dto';
 import { UserTransformService } from './user-transform.service';

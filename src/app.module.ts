@@ -5,11 +5,11 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { UtilsProvider } from './common/utils/utils.provider';
 import appConfig, { appValidationSchema } from './config/app.config';
 import authConfig, { authValidationSchema } from './config/auth.config';
 import dbConfig, { dbValidationSchema } from './config/db.config';
 import { UsersModule } from './users/users.module';
-import { UtilsProvider } from './utils/utils.provider';
 
 @Module({
   imports: [

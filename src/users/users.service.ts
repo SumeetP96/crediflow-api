@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateOptions, FindOptions, UpdateOptions } from 'sequelize';
-import { UtilsProvider } from 'src/utils/utils.provider';
+import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.model';
