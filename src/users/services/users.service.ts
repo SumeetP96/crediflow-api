@@ -42,20 +42,33 @@ export class UsersService {
     id: number,
     updateUserDto: UpdateUserDto,
     options?: UpdateOptions,
-  ): Promise<[number]> {
-    return await this.userModel.update(updateUserDto, {
+  ): Promise<User> {
+    await this.userModel.update(updateUserDto, {
       where: { id },
       ...(options || {}),
     });
+    return await this.findById(id);
   }
 
-  async softDelete(id: number, options?: UpdateOptions): Promise<[number]> {
-    return await this.userModel.update(
+  async softDelete(id: number, options?: UpdateOptions): Promise<User> {
+    await this.userModel.update(
       { status: 'deleted', deletedAt: new Date() },
       {
         where: { id },
         ...(options || {}),
       },
     );
+    return await this.findById(id);
+  }
+
+  async restoreDeleted(id: number, options?: UpdateOptions): Promise<User> {
+    await this.userModel.update(
+      { status: 'active', deletedAt: null },
+      {
+        where: { id },
+        ...(options || {}),
+      },
+    );
+    return await this.findById(id);
   }
 }
