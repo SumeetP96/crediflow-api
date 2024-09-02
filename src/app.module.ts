@@ -12,6 +12,7 @@ import appConfig, { appValidationSchema } from './config/app.config';
 import authConfig, { authValidationSchema } from './config/auth.config';
 import dbConfig, { dbValidationSchema } from './config/db.config';
 import { UsersModule } from './users/users.module';
+import { CustomersModule } from './customers/customers.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { UsersModule } from './users/users.module';
     // Modules
     UsersModule,
     AuthModule,
+    CustomersModule,
   ],
   controllers: [AppController],
   providers: [

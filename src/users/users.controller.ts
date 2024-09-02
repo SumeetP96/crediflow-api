@@ -31,6 +31,7 @@ export class UsersController {
   async create(@Body() createUserDto: CreateUserDto) {
     return this.userTransformService.transformedSuccessResponse(
       await this.usersService.create(createUserDto),
+      'User created',
     );
   }
 
@@ -57,22 +58,25 @@ export class UsersController {
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userTransformService.transformedSuccessResponse(
       await this.usersService.update(id, updateUserDto),
+      'User updated',
     );
   }
 
   @Delete(':id')
   @UseFilters(AllExceptionsFilter)
-  async softDelete(@Param('id') id: number) {
+  async delete(@Param('id') id: number) {
     return this.userTransformService.transformedSuccessResponse(
-      await this.usersService.softDelete(id),
+      await this.usersService.delete(id),
+      'User deleted',
     );
   }
 
-  @Post('restore-deleted/:id')
+  @Post('restore/:id')
   @UseFilters(AllExceptionsFilter)
-  async restoreDeleted(@Param('id') id: number) {
+  async restore(@Param('id') id: number) {
     return this.userTransformService.transformedSuccessResponse(
-      await this.usersService.restoreDeleted(id),
+      await this.usersService.restore(id),
+      'User restored',
     );
   }
 }

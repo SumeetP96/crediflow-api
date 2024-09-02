@@ -1,8 +1,9 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Default, Model, Table } from 'sequelize-typescript';
 import { UserRole, UserStatus } from './user.interfaces';
 
 @Table({
   tableName: 'users',
+  paranoid: true,
 })
 export class User extends Model {
   @Column
@@ -11,19 +12,15 @@ export class User extends Model {
   @Column
   username: string;
 
-  @Column
+  @Column(DataType.STRING)
   password: string;
 
-  @Column
+  @Column(
+    DataType.ENUM(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE),
+  )
   role: UserRole;
 
-  @Column({
-    defaultValue: 'active',
-  })
+  @Default(UserStatus.ACTIVE)
+  @Column(DataType.ENUM(UserStatus.ACTIVE, UserStatus.IN_ACTIVE))
   status: UserStatus;
-
-  @Column({
-    defaultValue: null,
-  })
-  deletedAt: Date | null;
 }
