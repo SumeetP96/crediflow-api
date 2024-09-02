@@ -14,10 +14,15 @@ export class User extends Model {
   password: string;
 
   @Column
-  role: 'admin' | 'user';
+  role: 'super_admin' | 'admin' | 'employee';
 
   @Column({
     defaultValue: 'active',
   })
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'deleted';
+
+  @Column({
+    defaultValue: null,
+  })
+  deletedAt: Date | null;
 }

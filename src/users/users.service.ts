@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { FindOptions } from 'sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { User } from './entities/user.model';
 
 @Injectable()
 export class UsersService {
@@ -12,28 +13,33 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    return this.userModel.create(createUserDto);
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.findAll();
+  findAll(options?: FindOptions): Promise<User[]> {
+    return this.userModel.findAll(options);
   }
 
-  async findById(id: number) {
+  findById(id: number) {
     return this.userModel.findByPk(id);
   }
 
-  async findByUsername(username: string): Promise<User> {
+  findByUsername(username: string): Promise<User> {
     return this.userModel.findOne({
       where: { username },
     });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return this.userModel.update(updateUserDto, {
+      where: { id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  softDelete(id: number) {
+    return this.userModel.update(
+      { status: 'deleted', deletedAt: new Date() },
+      { where: { id } },
+    );
   }
 }

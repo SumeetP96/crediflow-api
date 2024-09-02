@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './entities/user.entity';
+import { User } from './entities/user.model';
 
 @Injectable()
 export class TransformUserService {
