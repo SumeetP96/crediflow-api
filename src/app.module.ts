@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -28,12 +30,22 @@ import { UsersModule } from './users/users.module';
       synchronize: true,
       autoLoadModels: true,
     }),
+    // Throttling
+    ThrottlerModule.forRoot([
+      { name: 'short', ttl: 1000, limit: 3 },
+      { name: 'medium', ttl: 10000, limit: 20 },
+      { name: 'long', ttl: 60000, limit: 100 },
+    ]),
     // Modules
     UsersModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, UtilsProvider],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    UtilsProvider,
+  ],
   exports: [UtilsProvider],
 })
 export class AppModule {}
