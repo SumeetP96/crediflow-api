@@ -8,7 +8,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { CustomerStatus } from './customers.interface';
+import { CustomerStatus } from '../customers.interfaces';
 
 @Table({
   tableName: 'customers',

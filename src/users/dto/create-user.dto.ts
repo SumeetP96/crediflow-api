@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { UserRole, UserStatus } from '../user.interfaces';
 
 export const createUserSchema = z
   .object({
@@ -6,8 +7,8 @@ export const createUserSchema = z
     username: z.string().min(3).max(20),
     password: z.string().min(6).max(100),
     confirmPassword: z.string().min(6).max(100),
-    role: z.enum(['super_admin', 'admin', 'employee']),
-    status: z.enum(['active', 'inactive', 'deleted']),
+    role: z.enum([UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]),
+    status: z.enum([UserStatus.ACTIVE, UserStatus.IN_ACTIVE]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

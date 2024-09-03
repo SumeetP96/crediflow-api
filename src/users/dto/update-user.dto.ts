@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { UserRole, UserStatus } from '../user.interfaces';
 
 export const updateUserSchema = z
   .object({
@@ -6,8 +7,10 @@ export const updateUserSchema = z
     username: z.string().min(3).max(50).optional(),
     password: z.string().optional(),
     confirmPassword: z.string().optional(),
-    role: z.enum(['super-admin', 'admin', 'employee']).optional(),
-    status: z.enum(['active', 'inactive']).optional(),
+    role: z
+      .enum([UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE])
+      .optional(),
+    status: z.enum([UserStatus.ACTIVE, UserStatus.IN_ACTIVE]).optional(),
   })
   .refine(
     (data) => {

@@ -3,8 +3,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
-import { Customer } from './customer.entity';
 import { CustomersController } from './customers.controller';
+import { Customer } from './entities/customer.entity';
 import { CustomersService } from './services/customers.service';
 
 @Module({
