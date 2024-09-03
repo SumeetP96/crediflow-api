@@ -1,5 +1,5 @@
 import { Column, DataType, Default, Model, Table } from 'sequelize-typescript';
-import { UserRole, UserStatus } from './user.interfaces';
+import { UserRole, UserStatus } from '../user.interfaces';
 
 @Table({
   tableName: 'users',

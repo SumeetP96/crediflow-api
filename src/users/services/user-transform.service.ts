@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
-import { User } from '../user.entity';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UserTransformService {
