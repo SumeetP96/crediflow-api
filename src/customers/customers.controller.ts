@@ -20,6 +20,7 @@ import {
   UpdateCustomerDto,
   updateCustomerSchema,
 } from './dto/update-customer.dto';
+import { Customer } from './entities/customer.entity';
 import { CustomersService } from './services/customers.service';
 
 @Controller('customers')
@@ -49,7 +50,14 @@ export class CustomersController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.utilsProvider.responseBuilder.success(
-      await this.customersService.findById(id),
+      await this.customersService.findById(id, {
+        include: [
+          {
+            model: Customer,
+            attributes: ['id', 'name', 'contactNumbers', 'addresses'],
+          },
+        ],
+      }),
     );
   }
 
