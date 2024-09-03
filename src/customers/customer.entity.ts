@@ -4,6 +4,7 @@ import {
   Column,
   DataType,
   Default,
+  ForeignKey,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -35,7 +36,10 @@ export class Customer extends Model {
   status: CustomerStatus;
 
   @AllowNull
-  @BelongsTo(() => Customer)
+  @ForeignKey(() => Customer)
   @Column
+  parentId: number;
+
+  @BelongsTo(() => Customer, 'parentId')
   parent: Customer;
 }
