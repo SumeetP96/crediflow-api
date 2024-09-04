@@ -5,9 +5,11 @@ import {
   DataType,
   Default,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
+import { Invoice } from 'src/invoices/entities/invoice.entity';
 import { CustomerStatus } from '../customers.interfaces';
 
 @Table({
@@ -26,13 +28,14 @@ export class Customer extends Model {
   @Column(DataType.ARRAY(DataType.TEXT))
   addresses: string[];
 
-  @AllowNull
   @Default(0)
   @Column(DataType.FLOAT)
   balance: number;
 
-  @AllowNull
-  @Column(DataType.ENUM(CustomerStatus.ACTIVE, CustomerStatus.IN_ACTIVE))
+  @Column({
+    type: DataType.ENUM(CustomerStatus.ACTIVE, CustomerStatus.IN_ACTIVE),
+    defaultValue: CustomerStatus.ACTIVE,
+  })
   status: CustomerStatus;
 
   @AllowNull
@@ -42,4 +45,7 @@ export class Customer extends Model {
 
   @BelongsTo(() => Customer, 'parentId')
   parent: Customer;
+
+  @HasMany(() => Invoice)
+  invoices: Invoice[];
 }
