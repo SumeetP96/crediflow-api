@@ -7,14 +7,15 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { UtilsProvider } from './common/utils/utils.provider';
 import appConfig, { appValidationSchema } from './config/app.config';
 import authConfig, { authValidationSchema } from './config/auth.config';
 import dbConfig, { dbValidationSchema } from './config/db.config';
-import { UsersModule } from './users/users.module';
 import { CustomersModule } from './customers/customers.module';
 import { InvoiceCategoriesModule } from './invoice-categories/invoice-categories.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { UsersModule } from './users/users.module';
 import { AgentsModule } from './agents/agents.module';
 
 @Module({
@@ -52,6 +53,7 @@ import { AgentsModule } from './agents/agents.module';
   providers: [
     AppService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
     UtilsProvider,
   ],
   exports: [UtilsProvider],
