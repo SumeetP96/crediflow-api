@@ -13,6 +13,7 @@ import authConfig, { authValidationSchema } from './config/auth.config';
 import dbConfig, { dbValidationSchema } from './config/db.config';
 import { UsersModule } from './users/users.module';
 import { CustomersModule } from './customers/customers.module';
+import { InvoiceCategoriesModule } from './invoice-categories/invoice-categories.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { AgentsModule } from './agents/agents.module';
 
@@ -44,6 +45,7 @@ import { AgentsModule } from './agents/agents.module';
     AuthModule,
     CustomersModule,
     InvoicesModule,
+    InvoiceCategoriesModule,
     AgentsModule,
   ],
   controllers: [AppController],
