@@ -14,6 +14,7 @@ import dbConfig, { dbValidationSchema } from './config/db.config';
 import { UsersModule } from './users/users.module';
 import { CustomersModule } from './customers/customers.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { AgentsModule } from './agents/agents.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { InvoicesModule } from './invoices/invoices.module';
     AuthModule,
     CustomersModule,
     InvoicesModule,
+    AgentsModule,
   ],
   controllers: [AppController],
   providers: [
