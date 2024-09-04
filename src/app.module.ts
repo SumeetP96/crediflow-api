@@ -17,6 +17,8 @@ import { InvoiceCategoriesModule } from './invoice-categories/invoice-categories
 import { InvoicesModule } from './invoices/invoices.module';
 import { UsersModule } from './users/users.module';
 import { AgentsModule } from './agents/agents.module';
+import { TransactionTypesModule } from './transaction-types/transaction-types.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { AgentsModule } from './agents/agents.module';
     InvoicesModule,
     InvoiceCategoriesModule,
     AgentsModule,
+    TransactionTypesModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [
