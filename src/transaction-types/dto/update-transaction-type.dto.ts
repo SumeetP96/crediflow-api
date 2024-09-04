@@ -1,4 +1,11 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateTransactionTypeDto } from './create-transaction-type.dto';
+import { z } from 'zod';
 
-export class UpdateTransactionTypeDto extends PartialType(CreateTransactionTypeDto) {}
+export const updateTransactionTypeSchema = z.object({
+  name: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  isDeduction: z.boolean().optional().nullable(),
+});
+
+export type UpdateTransactionTypeDto = z.infer<
+  typeof updateTransactionTypeSchema
+>;
