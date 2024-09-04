@@ -1,14 +1,9 @@
-import {
-  AllowNull,
-  BelongsTo,
-  Column,
-  Model,
-  Table,
-} from 'sequelize-typescript';
-import { Invoice } from 'src/invoices/entities/invoice.entity';
+import { AllowNull, Column, HasMany, Model, Table } from 'sequelize-typescript';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 @Table({
   tableName: 'transaction_types',
+  paranoid: true,
 })
 export class TransactionType extends Model {
   @Column
@@ -19,8 +14,8 @@ export class TransactionType extends Model {
   description: string;
 
   @Column
-  isSubtracted: boolean;
+  isDeduction: boolean;
 
-  @BelongsTo(() => Invoice, 'invoiceId')
-  invoice: Invoice;
+  @HasMany(() => Transaction)
+  transactions: Transaction[];
 }

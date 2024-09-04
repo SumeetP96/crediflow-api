@@ -1,34 +1,80 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseFilters,
+  UsePipes,
+} from '@nestjs/common';
+import { AllExceptionsFilter } from 'src/common/exception-filters/all-exception.filter';
+import { UtilsProvider } from 'src/common/utils/utils.provider';
+import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
+import {
+  CreateTransactionTypeDto,
+  createTransactionTypeSchema,
+} from './dto/create-transaction-type.dto';
+import {
+  UpdateTransactionTypeDto,
+  updateTransactionTypeSchema,
+} from './dto/update-transaction-type.dto';
 import { TransactionTypesService } from './transaction-types.service';
-import { CreateTransactionTypeDto } from './dto/create-transaction-type.dto';
-import { UpdateTransactionTypeDto } from './dto/update-transaction-type.dto';
 
 @Controller('transaction-types')
 export class TransactionTypesController {
-  constructor(private readonly transactionTypesService: TransactionTypesService) {}
+  constructor(
+    private readonly transactionTypesService: TransactionTypesService,
+    private readonly utilsProvider: UtilsProvider,
+  ) {}
 
+  @UsePipes(new ZodValidationPipe({ body: createTransactionTypeSchema }))
+  @UseFilters(AllExceptionsFilter)
   @Post()
-  create(@Body() createTransactionTypeDto: CreateTransactionTypeDto) {
-    return this.transactionTypesService.create(createTransactionTypeDto);
+  async create(@Body() createTransactionTypeDto: CreateTransactionTypeDto) {
+    return this.utilsProvider.responseBuilder.success(
+      await this.transactionTypesService.create(createTransactionTypeDto),
+    );
   }
 
   @Get()
-  findAll() {
-    return this.transactionTypesService.findAll();
+  async findAll() {
+    return this.utilsProvider.responseBuilder.success(
+      await this.transactionTypesService.findAll(),
+    );
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionTypesService.findOne(+id);
+  async findById(@Param('id') id: number) {
+    return this.utilsProvider.responseBuilder.success(
+      await this.transactionTypesService.findById(id),
+    );
   }
 
+  @UsePipes(new ZodValidationPipe({ body: updateTransactionTypeSchema }))
+  @UseFilters(AllExceptionsFilter)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTransactionTypeDto: UpdateTransactionTypeDto) {
-    return this.transactionTypesService.update(+id, updateTransactionTypeDto);
+  async update(
+    @Param('id') id: number,
+    @Body() updateTransactionTypeDto: UpdateTransactionTypeDto,
+  ) {
+    return this.utilsProvider.responseBuilder.success(
+      await this.transactionTypesService.update(id, updateTransactionTypeDto),
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionTypesService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return this.utilsProvider.responseBuilder.success(
+      await this.transactionTypesService.remove(id),
+    );
+  }
+
+  @Post('restore/:id')
+  async restore(@Param('id') id: number) {
+    return this.utilsProvider.responseBuilder.success(
+      await this.transactionTypesService.restore(id),
+    );
   }
 }

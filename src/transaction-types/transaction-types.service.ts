@@ -1,26 +1,70 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import {
+  CreateOptions,
+  DestroyOptions,
+  FindOptions,
+  RestoreOptions,
+  UpdateOptions,
+} from 'sequelize';
 import { CreateTransactionTypeDto } from './dto/create-transaction-type.dto';
 import { UpdateTransactionTypeDto } from './dto/update-transaction-type.dto';
+import { TransactionType } from './entities/transaction-type.entity';
 
 @Injectable()
 export class TransactionTypesService {
-  create(createTransactionTypeDto: CreateTransactionTypeDto) {
-    return 'This action adds a new transactionType';
+  constructor(
+    @InjectModel(TransactionType)
+    private transactionTypeModel: typeof TransactionType,
+  ) {}
+
+  async create(
+    createTransactionTypeDto: CreateTransactionTypeDto,
+    options?: CreateOptions,
+  ): Promise<TransactionType> {
+    return await this.transactionTypeModel.create(
+      createTransactionTypeDto,
+      options,
+    );
   }
 
-  findAll() {
-    return `This action returns all transactionTypes`;
+  async findAll(options?: FindOptions): Promise<TransactionType[]> {
+    return await this.transactionTypeModel.findAll(options);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transactionType`;
+  async findById(id: number, options?: FindOptions): Promise<TransactionType> {
+    return await this.transactionTypeModel.findByPk(id, options);
   }
 
-  update(id: number, updateTransactionTypeDto: UpdateTransactionTypeDto) {
-    return `This action updates a #${id} transactionType`;
+  async update(
+    id: number,
+    updateTransactionTypeDto: UpdateTransactionTypeDto,
+    options?: UpdateOptions,
+  ): Promise<TransactionType> {
+    await this.transactionTypeModel.update(updateTransactionTypeDto, {
+      where: { id },
+      ...(options || {}),
+    });
+    return await this.findById(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transactionType`;
+  async remove(id: number, options?: DestroyOptions): Promise<TransactionType> {
+    const transactionType = await this.findById(id);
+    await this.transactionTypeModel.destroy({
+      where: { id },
+      ...(options || {}),
+    });
+    return transactionType;
+  }
+
+  async restore(
+    id: number,
+    options?: RestoreOptions,
+  ): Promise<TransactionType> {
+    await this.transactionTypeModel.restore({
+      where: { id },
+      ...(options || {}),
+    });
+    return await this.findById(id);
   }
 }
