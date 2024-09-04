@@ -4,12 +4,14 @@ import {
   DataType,
   Default,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Agent } from 'src/agents/entities/agent.entity';
 import { Customer } from 'src/customers/entities/customer.entity';
 import { InvoiceCategory } from 'src/invoice-categories/entities/invoice-category.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { InvoiceRelation } from './invoice-relations.entity';
 
 @Table({
   tableName: 'invoices',
@@ -35,33 +37,18 @@ export class Invoice extends Model {
 
   @Default(0)
   @Column(DataType.FLOAT)
-  discount: number;
-
-  @Default(0)
-  @Column(DataType.FLOAT)
-  advance: number;
-
-  @Default(0)
-  @Column(DataType.FLOAT)
   balance: number;
 
-  @ForeignKey(() => Customer)
-  @Column
-  coCustomerId: number;
-
-  @ForeignKey(() => Agent)
-  @Column
-  coAgentId: number;
-
+  // Reations
   @BelongsTo(() => InvoiceCategory, 'invoiceCategoryId')
   invoiceCategory: InvoiceCategory;
 
   @BelongsTo(() => Customer, 'customerId')
   customer: Customer;
 
-  @BelongsTo(() => Customer, 'coCustomerId')
-  coCustomer: Customer;
+  @HasMany(() => Transaction)
+  transactions: Transaction[];
 
-  @BelongsTo(() => Agent, 'coAgentId')
-  agent: Agent;
+  @HasMany(() => InvoiceRelation)
+  invoiceRelations: InvoiceRelation[];
 }

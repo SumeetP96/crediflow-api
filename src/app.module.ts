@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import * as Joi from 'joi';
+import { AgentsModule } from './agents/agents.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -15,10 +16,9 @@ import dbConfig, { dbValidationSchema } from './config/db.config';
 import { CustomersModule } from './customers/customers.module';
 import { InvoiceCategoriesModule } from './invoice-categories/invoice-categories.module';
 import { InvoicesModule } from './invoices/invoices.module';
-import { UsersModule } from './users/users.module';
-import { AgentsModule } from './agents/agents.module';
 import { TransactionTypesModule } from './transaction-types/transaction-types.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [

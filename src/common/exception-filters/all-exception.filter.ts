@@ -38,7 +38,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private getResponseMessage(exception: any): string {
     if (exception.name.includes('Sequelize')) {
-      return `Sequelize Error: ${exception.errors.map((error) => error.message).join(', ')}`;
+      const errors = exception?.errors?.length
+        ? exception.errors.map((error: any) => error.message).join(', ')
+        : exception.message;
+      return `Sequelize Error: ${errors}`;
     }
 
     return (

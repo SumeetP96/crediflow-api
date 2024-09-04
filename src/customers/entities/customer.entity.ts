@@ -9,6 +9,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
+import { InvoiceRelation } from 'src/invoices/entities/invoice-relations.entity';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
 import { CustomerStatus } from '../customers.interfaces';
 
@@ -48,4 +49,7 @@ export class Customer extends Model {
 
   @HasMany(() => Invoice)
   invoices: Invoice[];
+
+  @HasMany(() => InvoiceRelation)
+  invoiceRelations: InvoiceRelation[];
 }

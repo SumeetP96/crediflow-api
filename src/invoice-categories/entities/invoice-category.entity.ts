@@ -10,7 +10,7 @@ import { Invoice } from 'src/invoices/entities/invoice.entity';
 import { InvoiceCategoriesStatus } from '../invoice-categories.interfaces';
 
 @Table({
-  tableName: 'invoice_category',
+  tableName: 'invoice_categories',
   paranoid: true,
 })
 export class InvoiceCategory extends Model {
@@ -38,6 +38,7 @@ export class InvoiceCategory extends Model {
   })
   status: InvoiceCategoriesStatus;
 
+  // Relations
   @HasMany(() => Invoice)
   invoices: Invoice[];
 }
