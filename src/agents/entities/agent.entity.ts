@@ -8,7 +8,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Invoice } from 'src/invoices/entities/invoice.entity';
+import { InvoiceRelation } from 'src/invoices/entities/invoice-relations.entity';
 import { AgentsStatus } from '../agents.interfaces';
 
 @Table({
@@ -41,6 +41,6 @@ export class Agent extends Model {
   @BelongsTo(() => Agent, 'parentId')
   parent: Agent;
 
-  @HasMany(() => Invoice)
-  invoices: Invoice[];
+  @HasMany(() => InvoiceRelation)
+  invoiceRelations: InvoiceRelation[];
 }
