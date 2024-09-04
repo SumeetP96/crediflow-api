@@ -35,6 +35,14 @@ export class Invoice extends Model {
 
   @Default(0)
   @Column(DataType.FLOAT)
+  discount: number;
+
+  @Default(0)
+  @Column(DataType.FLOAT)
+  advance: number;
+
+  @Default(0)
+  @Column(DataType.FLOAT)
   balance: number;
 
   @ForeignKey(() => Customer)
