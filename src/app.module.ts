@@ -34,8 +34,11 @@ import { UsersModule } from './users/users.module';
     // Databases
     SequelizeModule.forRoot({
       ...dbConfig().postgres,
-      synchronize: true,
+      synchronize: false,
       autoLoadModels: true,
+      define: {
+        underscored: true,
+      },
     }),
     // Throttling
     ThrottlerModule.forRoot([
