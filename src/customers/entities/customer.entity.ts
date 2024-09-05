@@ -18,6 +18,11 @@ import { CustomerStatus } from '../customers.interfaces';
   paranoid: true,
 })
 export class Customer extends Model {
+  @AllowNull
+  @ForeignKey(() => Customer)
+  @Column
+  parentId: number;
+
   @Column
   name: string;
 
@@ -29,6 +34,9 @@ export class Customer extends Model {
   @Column(DataType.ARRAY(DataType.TEXT))
   addresses: string[];
 
+  @Column
+  isReseller: boolean;
+
   @Default(0)
   @Column(DataType.FLOAT)
   balance: number;
@@ -38,11 +46,6 @@ export class Customer extends Model {
     defaultValue: CustomerStatus.ACTIVE,
   })
   status: CustomerStatus;
-
-  @AllowNull
-  @ForeignKey(() => Customer)
-  @Column
-  parentId: number;
 
   @BelongsTo(() => Customer, 'parentId')
   parent: Customer;

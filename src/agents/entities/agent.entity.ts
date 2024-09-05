@@ -16,6 +16,11 @@ import { AgentsStatus } from '../agents.interfaces';
   paranoid: true,
 })
 export class Agent extends Model {
+  @AllowNull
+  @ForeignKey(() => Agent)
+  @Column
+  parentId: number;
+
   @Column
   name: string;
 
@@ -32,11 +37,6 @@ export class Agent extends Model {
     defaultValue: AgentsStatus.ACTIVE,
   })
   status: AgentsStatus;
-
-  @AllowNull
-  @ForeignKey(() => Agent)
-  @Column
-  parentId: number;
 
   @BelongsTo(() => Agent, 'parentId')
   parent: Agent;
