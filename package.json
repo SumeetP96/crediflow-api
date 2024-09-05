@@ -21,7 +21,18 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "seq": "sequelize-cli"
+    "db:migration:generate": "sequelize-cli migration:generate --name ",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo",
+    "db:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
+    "db:migrate:restore": "npm run db:migrate:undo:all && npm run db:migrate",
+    "db:seed:generate": "sequelize-cli seed:generate --name ",
+    "db:seed:one": "sequelize-cli db:seed",
+    "db:seed:all": "sequelize-cli db:seed:all",
+    "db:seed:undo": "sequelize-cli db:seed:undo",
+    "db:seed:undo:all": "sequelize-cli db:seed:undo:all",
+    "db:seed:restore": "npm run db:seed:undo:all && npm run db:seed:all",
+    "db:restore": "npm run db:migrate:restore && npm run db:seed:all"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
