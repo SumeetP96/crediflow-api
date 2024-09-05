@@ -10,7 +10,7 @@ async function hash(plaintextPassword) {
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     await queryInterface.bulkInsert(
       'users',
       [
@@ -20,16 +20,15 @@ module.exports = {
           password: await hash('sumeet'),
           role: 'super_admin',
           status: 'active',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
+          created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {},
     );
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.bulkDelete('users', null, {});
   },
 };
