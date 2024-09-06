@@ -2,6 +2,7 @@ import {
   AllowNull,
   Column,
   DataType,
+  Default,
   HasMany,
   Model,
   Table,
@@ -11,7 +12,6 @@ import { InvoiceCategoriesStatus } from '../invoice-categories.interfaces';
 
 @Table({
   tableName: 'invoice_categories',
-  paranoid: true,
 })
 export class InvoiceCategory extends Model {
   @Column
@@ -28,6 +28,14 @@ export class InvoiceCategory extends Model {
   @AllowNull
   @Column
   description: string;
+
+  @Default(false)
+  @Column
+  isAutoIncrement: boolean;
+
+  @AllowNull
+  @Column
+  nextNumber: number;
 
   @Column({
     type: DataType.ENUM(

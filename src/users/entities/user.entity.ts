@@ -1,4 +1,13 @@
-import { Column, DataType, Default, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  Default,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { Invoice } from 'src/invoices/entities/invoice.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 import { UserRole, UserStatus } from '../user.interfaces';
 
 @Table({
@@ -23,4 +32,12 @@ export class User extends Model {
   @Default(UserStatus.ACTIVE)
   @Column(DataType.ENUM(UserStatus.ACTIVE, UserStatus.IN_ACTIVE))
   status: UserStatus;
+
+  // Relations
+
+  @HasMany(() => Invoice)
+  invoices: Invoice[];
+
+  @HasMany(() => Transaction)
+  transactions: Transaction[];
 }

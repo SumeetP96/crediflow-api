@@ -3,42 +3,61 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Customer } from 'src/customers/entities/customer.entity';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
 import { TransactionType } from 'src/transaction-types/entities/transaction-type.entity';
+import { User } from 'src/users/entities/user.entity';
+import { TransactionStatus } from '../transactions.interfaces';
 
 @Table({
   tableName: 'transactions',
 })
 export class Transaction extends Model {
-  @Column
-  date: Date;
-
   @ForeignKey(() => TransactionType)
+  @Column
   transactionTypeId: number;
 
   @ForeignKey(() => Invoice)
+  @Column
   invoiceId: number;
 
-  @ForeignKey(() => Customer)
-  customerId: number;
+  @ForeignKey(() => User)
+  @Column
+  userId: number;
+
+  @Column
+  date: Date;
 
   @Column(DataType.FLOAT)
   amount: number;
 
+  @Default(0)
   @Column
   displayIndex: number;
 
   @Column
-  isFromInvoice: boolean;
+  isPartOfInvoice: boolean;
 
   @AllowNull
   @Column(DataType.TEXT)
   remarks: string;
+
+  @Column({
+    type: DataType.ENUM(
+      TransactionStatus.COMPLETE,
+      TransactionStatus.PROCESSING,
+      TransactionStatus.ON_HOLD,
+      TransactionStatus.FAILED,
+      TransactionStatus.CANCELLED,
+    ),
+  })
+  status: TransactionStatus;
+
+  // Relations
 
   @BelongsTo(() => TransactionType, 'transactionTypeId')
   transactionType: TransactionType;
@@ -46,6 +65,6 @@ export class Transaction extends Model {
   @BelongsTo(() => Invoice, 'invoiceId')
   invoice: Invoice;
 
-  @BelongsTo(() => Customer, 'customerId')
-  customer: Customer;
+  @BelongsTo(() => User, 'userId')
+  user: User;
 }

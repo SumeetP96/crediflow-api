@@ -3,7 +3,6 @@ import { Transaction } from 'src/transactions/entities/transaction.entity';
 
 @Table({
   tableName: 'transaction_types',
-  paranoid: true,
 })
 export class TransactionType extends Model {
   @Column
