@@ -12,12 +12,6 @@ import { Invoice } from './invoice.entity';
 
 @Table({
   tableName: 'invoice_relations',
-  indexes: [
-    {
-      unique: true,
-      fields: ['invoiceId', 'customerId', 'agentId'],
-    },
-  ],
 })
 export class InvoiceRelation extends Model {
   @ForeignKey(() => Invoice)
@@ -33,6 +27,8 @@ export class InvoiceRelation extends Model {
   @ForeignKey(() => Agent)
   @Column
   agentId: number;
+
+  // Relations
 
   @BelongsTo(() => Invoice, 'invoiceId')
   invoice: Invoice;
