@@ -12,10 +12,10 @@ module.exports = {
       CREATE TABLE IF NOT EXISTS agents (
         id SERIAL PRIMARY KEY,
         parent_id INTEGER,
-        name VARCHAR(255),
+        name VARCHAR(255) NOT NULL,
         contact_numbers VARCHAR[],
         addresses TEXT[],
-        status enum_agent_status,
+        status enum_agent_status NOT NULL DEFAULT 'active',
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         deleted_at TIMESTAMP
@@ -34,7 +34,7 @@ module.exports = {
 
   async down(queryInterface) {
     await queryInterface.sequelize.query(`
-      DROP TABLE agents;
+      DROP TABLE IF EXISTS agents;
     `);
 
     await queryInterface.sequelize.query(`

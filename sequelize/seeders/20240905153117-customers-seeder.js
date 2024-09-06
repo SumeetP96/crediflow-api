@@ -5,6 +5,11 @@ require('dotenv').config();
 
 const isDevEnv = process.env.NODE_ENV !== 'production';
 
+const status = {
+  active: 'active',
+  in_active: 'in_active',
+};
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
@@ -21,7 +26,7 @@ module.exports = {
           addresses: ['Ahmedabad, Gujarat', 'Mumbai, Maharashtra'],
           is_reseller: false,
           balance: 10000,
-          status: 'active',
+          status: status.active,
         },
         {
           parent_id: 1,
@@ -30,7 +35,7 @@ module.exports = {
           addresses: ['Ahmedabad, Gujarat'],
           is_reseller: false,
           balance: 5000,
-          status: 'active',
+          status: status.active,
         },
         {
           name: 'Customer Two (Reseller)',
@@ -38,7 +43,7 @@ module.exports = {
           addresses: ['Jodhpur, Rajasthan', 'Chennai, Tamil Nadu'],
           is_reseller: true,
           balance: 20000,
-          status: 'active',
+          status: status.active,
         },
         {
           parent_id: 3,
@@ -47,7 +52,7 @@ module.exports = {
           addresses: ['Jodhpur, Rajasthan', 'Chennai, Tamil Nadu'],
           is_reseller: true,
           balance: 15000,
-          status: 'active',
+          status: status.active,
         },
       ],
       {},

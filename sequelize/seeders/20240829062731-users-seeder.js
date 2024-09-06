@@ -8,6 +8,17 @@ async function hash(plaintextPassword) {
   return await bcrypt.hash(plaintextPassword, salt);
 }
 
+const status = {
+  active: 'active',
+  in_active: 'in_active',
+};
+
+const roles = {
+  super_admin: 'super_admin',
+  admin: 'admin',
+  employee: 'employee',
+};
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
@@ -15,11 +26,29 @@ module.exports = {
       'users',
       [
         {
-          name: 'Sumeet',
-          username: 'sumeet',
-          password: await hash('sumeet'),
-          role: 'super_admin',
-          status: 'active',
+          name: 'Super Admin',
+          username: 'superadmin',
+          password: await hash('password'),
+          role: roles.super_admin,
+          status: status.active,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+        {
+          name: 'Admin',
+          username: 'admin',
+          password: await hash('password'),
+          role: roles.admin,
+          status: status.active,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+        {
+          name: 'Employee',
+          username: 'employee',
+          password: await hash('password'),
+          role: roles.employee,
+          status: status.active,
           created_at: new Date(),
           updated_at: new Date(),
         },

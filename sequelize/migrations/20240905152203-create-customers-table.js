@@ -12,12 +12,12 @@ module.exports = {
       CREATE TABLE IF NOT EXISTS customers (
         id SERIAL PRIMARY KEY,
         parent_id INTEGER,
-        name VARCHAR(255),
+        name VARCHAR(255) NOT NULL,
         contact_numbers VARCHAR[],
         addresses TEXT[],
-        is_reseller BOOLEAN,
-        status enum_customer_status,
-        balance DOUBLE PRECISION DEFAULT 0,
+        is_reseller BOOLEAN NOT NULL DEFAULT FALSE,
+        status enum_customer_status NOT NULL DEFAULT 'active',
+        balance DOUBLE PRECISION NOT NULL DEFAULT 0,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         deleted_at TIMESTAMP
@@ -36,7 +36,7 @@ module.exports = {
 
   async down(queryInterface) {
     await queryInterface.sequelize.query(`
-      DROP TABLE customers;
+      DROP TABLE IF EXISTS customers;
     `);
 
     await queryInterface.sequelize.query(`
