@@ -46,15 +46,15 @@ export class Transaction extends Model {
   @Column(DataType.TEXT)
   remarks: string;
 
-  @Column({
-    type: DataType.ENUM(
+  @Column(
+    DataType.ENUM(
       TransactionStatus.COMPLETE,
       TransactionStatus.PROCESSING,
       TransactionStatus.ON_HOLD,
       TransactionStatus.FAILED,
       TransactionStatus.CANCELLED,
     ),
-  })
+  )
   status: TransactionStatus;
 
   // Relations

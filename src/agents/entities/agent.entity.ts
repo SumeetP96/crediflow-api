@@ -3,6 +3,7 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   HasMany,
   Model,
@@ -32,11 +33,11 @@ export class Agent extends Model {
   @Column(DataType.ARRAY(DataType.TEXT))
   addresses: string[];
 
-  @Column({
-    type: DataType.ENUM(AgentsStatus.ACTIVE, AgentsStatus.IN_ACTIVE),
-    defaultValue: AgentsStatus.ACTIVE,
-  })
+  @Default(AgentsStatus.ACTIVE)
+  @Column(DataType.ENUM(AgentsStatus.ACTIVE, AgentsStatus.IN_ACTIVE))
   status: AgentsStatus;
+
+  // Relations
 
   @BelongsTo(() => Agent, 'parentId')
   parent: Agent;

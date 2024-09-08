@@ -41,11 +41,11 @@ export class Customer extends Model {
   @Column(DataType.FLOAT)
   balance: number;
 
-  @Column({
-    type: DataType.ENUM(CustomerStatus.ACTIVE, CustomerStatus.IN_ACTIVE),
-    defaultValue: CustomerStatus.ACTIVE,
-  })
+  @Default(CustomerStatus.ACTIVE)
+  @Column(DataType.ENUM(CustomerStatus.ACTIVE, CustomerStatus.IN_ACTIVE))
   status: CustomerStatus;
+
+  // Relations
 
   @BelongsTo(() => Customer, 'parentId')
   parent: Customer;

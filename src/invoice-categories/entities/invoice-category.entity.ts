@@ -37,16 +37,17 @@ export class InvoiceCategory extends Model {
   @Column
   nextNumber: number;
 
-  @Column({
-    type: DataType.ENUM(
+  @Default(InvoiceCategoriesStatus.ACTIVE)
+  @Column(
+    DataType.ENUM(
       InvoiceCategoriesStatus.ACTIVE,
       InvoiceCategoriesStatus.IN_ACTIVE,
     ),
-    defaultValue: InvoiceCategoriesStatus.ACTIVE,
-  })
+  )
   status: InvoiceCategoriesStatus;
 
   // Relations
+
   @HasMany(() => Invoice)
   invoices: Invoice[];
 }

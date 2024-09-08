@@ -50,15 +50,15 @@ export class Invoice extends Model {
   @Column
   dueDate: Date;
 
-  @Column({
-    type: DataType.ENUM(
+  @Default(InvoiceStatus.UNPAID)
+  @Column(
+    DataType.ENUM(
       InvoiceStatus.PAID,
       InvoiceStatus.UNPAID,
       InvoiceStatus.ON_HOLD,
       InvoiceStatus.CANCELLED,
     ),
-    defaultValue: InvoiceStatus.UNPAID,
-  })
+  )
   status: InvoiceStatus;
 
   // Reations
