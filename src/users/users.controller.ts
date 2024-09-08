@@ -17,6 +17,7 @@ import { UpdateUserDto, updateUserSchema } from './dto/update-user.dto';
 import { UserTransformService } from './services/user-transform.service';
 import { UsersService } from './services/users.service';
 
+@UseFilters(AllExceptionsFilter)
 @Controller('users')
 export class UsersController {
   constructor(
@@ -27,7 +28,6 @@ export class UsersController {
 
   @Post()
   @UsePipes(new ZodValidationPipe({ body: createUserSchema }))
-  @UseFilters(AllExceptionsFilter)
   async create(@Body() createUserDto: CreateUserDto) {
     return this.userTransformService.transformedSuccessResponse(
       await this.usersService.create(createUserDto),
@@ -45,7 +45,6 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseFilters(AllExceptionsFilter)
   async findById(@Param('id') id: number) {
     return this.userTransformService.transformedSuccessResponse(
       await this.usersService.findById(id),
@@ -54,7 +53,6 @@ export class UsersController {
 
   @Patch(':id')
   @UsePipes(new ZodValidationPipe({ body: updateUserSchema }))
-  @UseFilters(AllExceptionsFilter)
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userTransformService.transformedSuccessResponse(
       await this.usersService.update(id, updateUserDto),

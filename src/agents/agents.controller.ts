@@ -16,6 +16,7 @@ import { AgentsService } from './agents.service';
 import { CreateAgentDto, createAgentSchema } from './dto/create-agent.dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 
+@UseFilters(AllExceptionsFilter)
 @Controller('agents')
 export class AgentsController {
   constructor(
@@ -24,7 +25,6 @@ export class AgentsController {
   ) {}
 
   @UsePipes(new ZodValidationPipe({ body: createAgentSchema }))
-  @UseFilters(AllExceptionsFilter)
   @Post()
   async create(@Body() createAgentDto: CreateAgentDto) {
     return this.utilsProvider.responseBuilder.success(

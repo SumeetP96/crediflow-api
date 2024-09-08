@@ -3,9 +3,11 @@ import {
   Get,
   Post,
   Request,
+  UseFilters,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { AllExceptionsFilter } from 'src/common/exception-filters/all-exception.filter';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
 import { UserTransformService } from 'src/users/services/user-transform.service';
@@ -17,6 +19,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthService } from './services/auth.service';
 
+@UseFilters(AllExceptionsFilter)
 @Controller('auth')
 export class AuthController {
   constructor(

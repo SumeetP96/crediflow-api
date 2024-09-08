@@ -22,6 +22,7 @@ import {
 } from './dto/update-invoice-category.dto';
 import { InvoiceCategoriesService } from './invoice-categories.service';
 
+@UseFilters(AllExceptionsFilter)
 @Controller('invoice-categories')
 export class InvoiceCategoriesController {
   constructor(
@@ -30,7 +31,6 @@ export class InvoiceCategoriesController {
   ) {}
 
   @UsePipes(new ZodValidationPipe({ body: createInvoiceCategorySchema }))
-  @UseFilters(AllExceptionsFilter)
   @Post()
   async create(@Body() createInvoiceCategoryDto: CreateInvoiceCategoryDto) {
     return this.utilsProvider.responseBuilder.success(
@@ -53,7 +53,6 @@ export class InvoiceCategoriesController {
   }
 
   @UsePipes(new ZodValidationPipe({ body: updateInvoiceCategorySchema }))
-  @UseFilters(AllExceptionsFilter)
   @Patch(':id')
   async update(
     @Param('id') id: number,

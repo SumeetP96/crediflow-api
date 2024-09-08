@@ -34,7 +34,7 @@ export class TransactionsService {
       transaction,
     });
 
-    const balance = invoice.balance - amount;
+    const balance = Math.abs(invoice.balance - amount);
 
     const isFullyPaid = balance === 0;
 
@@ -110,11 +110,23 @@ export class TransactionsService {
   }
 
   async remove(id: number, options?: DestroyOptions): Promise<Transaction> {
-    const transaction = await this.findById(id);
-    await this.transactionModel.destroy({
-      where: { id },
-      ...(options || {}),
+    return await this.sequelize.transaction(async (transaction) => {
+      const deleteTransaction = await this.findById(id, {
+        include: TransactionType,
+      });
+
+      await this.settleTransactionWithInovice(
+        deleteTransaction.invoiceId,
+        deleteTransaction.amount * -1, // negative amount for deduction
+        transaction,
+      );
+
+      await this.transactionModel.destroy({
+        where: { id },
+        ...(options || {}),
+      });
+
+      return deleteTransaction;
     });
-    return transaction;
   }
 }

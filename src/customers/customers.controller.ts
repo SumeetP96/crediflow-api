@@ -23,6 +23,7 @@ import {
 import { Customer } from './entities/customer.entity';
 import { CustomersService } from './services/customers.service';
 
+@UseFilters(AllExceptionsFilter)
 @Controller('customers')
 export class CustomersController {
   constructor(
@@ -32,7 +33,6 @@ export class CustomersController {
 
   @Post()
   @UsePipes(new ZodValidationPipe({ body: createCustomerSchema }))
-  @UseFilters(AllExceptionsFilter)
   async create(@Body() createCustomerDto: CreateCustomerDto) {
     return this.utilsProvider.responseBuilder.success(
       await this.customersService.create(createCustomerDto),
@@ -63,7 +63,6 @@ export class CustomersController {
 
   @Patch(':id')
   @UsePipes(new ZodValidationPipe({ body: updateCustomerSchema }))
-  @UseFilters(AllExceptionsFilter)
   async update(
     @Param('id') id: number,
     @Body() updateCustomerDto: UpdateCustomerDto,

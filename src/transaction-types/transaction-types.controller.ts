@@ -22,6 +22,7 @@ import {
 } from './dto/update-transaction-type.dto';
 import { TransactionTypesService } from './transaction-types.service';
 
+@UseFilters(AllExceptionsFilter)
 @Controller('transaction-types')
 export class TransactionTypesController {
   constructor(
@@ -30,7 +31,6 @@ export class TransactionTypesController {
   ) {}
 
   @UsePipes(new ZodValidationPipe({ body: createTransactionTypeSchema }))
-  @UseFilters(AllExceptionsFilter)
   @Post()
   async create(@Body() createTransactionTypeDto: CreateTransactionTypeDto) {
     return this.utilsProvider.responseBuilder.success(
@@ -53,7 +53,6 @@ export class TransactionTypesController {
   }
 
   @UsePipes(new ZodValidationPipe({ body: updateTransactionTypeSchema }))
-  @UseFilters(AllExceptionsFilter)
   @Patch(':id')
   async update(
     @Param('id') id: number,

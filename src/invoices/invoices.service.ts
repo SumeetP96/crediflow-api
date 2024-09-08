@@ -9,6 +9,7 @@ import {
 } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { InvoiceCategory } from 'src/invoice-categories/entities/invoice-category.entity';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { InvoiceRelation } from './entities/invoice-relations.entity';
@@ -24,6 +25,8 @@ export class InvoicesService {
     private invoiceRelationModel: typeof InvoiceRelation,
     @InjectModel(InvoiceCategory)
     private invoiceCategoryModel: typeof InvoiceCategory,
+    @InjectModel(Transaction)
+    private transactionModel: typeof Transaction,
     private sequelize: Sequelize,
   ) {}
 
@@ -176,11 +179,23 @@ export class InvoicesService {
   }
 
   async remove(id: number, options?: DestroyOptions) {
+    const invoiceTransactionsCount = await this.transactionModel.count({
+      where: {
+        invoiceId: id,
+      },
+    });
+
+    if (invoiceTransactionsCount > 0) {
+      throw new Error('Transactions exist for this invoice.');
+    }
+
     const invoice = await this.findById(id);
+
     await this.invoiceModel.destroy({
       where: { id },
       ...(options || {}),
     });
+
     return invoice;
   }
 }

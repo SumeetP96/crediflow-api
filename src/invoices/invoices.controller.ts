@@ -24,6 +24,7 @@ import {
 import { InvoiceRelation } from './entities/invoice-relations.entity';
 import { InvoicesService } from './invoices.service';
 
+@UseFilters(AllExceptionsFilter)
 @Controller('invoices')
 export class InvoicesController {
   constructor(
@@ -32,7 +33,6 @@ export class InvoicesController {
   ) {}
 
   @UsePipes(new ZodValidationPipe({ body: createInvoiceSchema }))
-  @UseFilters(AllExceptionsFilter)
   @Post()
   async create(@Request() req, @Body() createInvoiceDto: CreateInvoiceDto) {
     return await this.invoicesService.create(
@@ -58,7 +58,6 @@ export class InvoicesController {
   }
 
   @UsePipes(new ZodValidationPipe({ body: updateInvoiceSchema }))
-  @UseFilters(AllExceptionsFilter)
   @Patch(':id')
   async update(
     @Param('id') id: string,
