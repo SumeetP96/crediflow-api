@@ -14,9 +14,11 @@ module.exports = {
         invoice_category_id INTEGER NOT NULL,
         customer_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
+        date TIMESTAMP NOT NULL,
+        invoice_number VARCHAR(50) NOT NULL,
         amount DOUBLE PRECISION NOT NULL DEFAULT 0,
         balance DOUBLE PRECISION NOT NULL DEFAULT 0,
-        due_date TIMESTAMP NOT NULL,
+        due_date TIMESTAMP,
         status enum_invoice_status NOT NULL DEFAULT 'unpaid',
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

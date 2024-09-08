@@ -7,8 +7,8 @@ module.exports = {
       CREATE TABLE IF NOT EXISTS invoice_relations (
         id SERIAL PRIMARY KEY,
         invoice_id INTEGER NOT NULL,
-        customer_id INTEGER NOT NULL,
-        agent_id INTEGER NOT NULL,
+        customer_id INTEGER,
+        agent_id INTEGER,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       );

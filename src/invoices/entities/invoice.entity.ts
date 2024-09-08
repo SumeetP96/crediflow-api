@@ -1,4 +1,5 @@
 import {
+  AllowNull,
   BelongsTo,
   Column,
   DataType,
@@ -19,15 +20,9 @@ import { InvoiceRelation } from './invoice-relations.entity';
   tableName: 'invoices',
 })
 export class Invoice extends Model {
-  @Column
-  date: Date;
-
   @ForeignKey(() => InvoiceCategory)
   @Column
   invoiceCategoryId: number;
-
-  @Column
-  invoiceNumber: string;
 
   @ForeignKey(() => Customer)
   @Column
@@ -37,6 +32,12 @@ export class Invoice extends Model {
   @Column
   userId: number;
 
+  @Column
+  date: Date;
+
+  @Column
+  invoiceNumber: string;
+
   @Default(0)
   @Column(DataType.FLOAT)
   amount: number;
@@ -45,6 +46,7 @@ export class Invoice extends Model {
   @Column(DataType.FLOAT)
   balance: number;
 
+  @AllowNull
   @Column
   dueDate: Date;
 

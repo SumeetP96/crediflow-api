@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseFilters,
   UsePipes,
 } from '@nestjs/common';
@@ -20,6 +21,7 @@ import {
   UpdateInvoiceDto,
   updateInvoiceSchema,
 } from './dto/update-invoice.dto';
+import { InvoiceRelation } from './entities/invoice-relations.entity';
 import { InvoicesService } from './invoices.service';
 
 @Controller('invoices')
@@ -32,8 +34,11 @@ export class InvoicesController {
   @UsePipes(new ZodValidationPipe({ body: createInvoiceSchema }))
   @UseFilters(AllExceptionsFilter)
   @Post()
-  async create(@Body() createInvoiceDto: CreateInvoiceDto) {
-    return await this.invoicesService.create(createInvoiceDto);
+  async create(@Request() req, @Body() createInvoiceDto: CreateInvoiceDto) {
+    return await this.invoicesService.create(
+      parseInt(req.user.id, 10),
+      createInvoiceDto,
+    );
   }
 
   @Get()
@@ -44,9 +49,11 @@ export class InvoicesController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: number) {
+  async findById(@Param('id') id: string) {
     return this.utilsProvider.responseBuilder.success(
-      await this.invoicesService.findById(id),
+      await this.invoicesService.findById(parseInt(id, 10), {
+        include: InvoiceRelation,
+      }),
     );
   }
 
@@ -54,16 +61,16 @@ export class InvoicesController {
   @UseFilters(AllExceptionsFilter)
   @Patch(':id')
   async update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateInvoiceDto: UpdateInvoiceDto,
   ) {
     return this.utilsProvider.responseBuilder.success(
-      await this.invoicesService.update(id, updateInvoiceDto),
+      await this.invoicesService.update(Number(id), updateInvoiceDto),
     );
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.invoicesService.remove(+id);
+    return this.invoicesService.remove(Number(id));
   }
 }

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
+import { InvoiceCategory } from 'src/invoice-categories/entities/invoice-category.entity';
 import { InvoiceRelation } from './entities/invoice-relations.entity';
 import { Invoice } from './entities/invoice.entity';
 import { InvoicesController } from './invoices.controller';
@@ -10,6 +11,7 @@ import { InvoicesService } from './invoices.service';
   imports: [
     SequelizeModule.forFeature([Invoice]),
     SequelizeModule.forFeature([InvoiceRelation]),
+    SequelizeModule.forFeature([InvoiceCategory]),
   ],
   controllers: [InvoicesController],
   providers: [InvoicesService, UtilsProvider],

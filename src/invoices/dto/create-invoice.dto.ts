@@ -2,11 +2,17 @@ import { z } from 'zod';
 
 export const createInvoiceSchema = z
   .object({
-    date: z.string(),
     invoiceCategoryId: z.number().int().positive(),
-    invoiceNumber: z.union([z.number().int().positive(), z.string()]),
     customerId: z.number().int().positive(),
+    date: z.string(),
+    invoiceNumber: z.union([z.number().int().positive(), z.string()]),
     amount: z.number(),
+    dueDate: z.string().optional().nullable(),
+    relatedCustomerIds: z
+      .array(z.number().int().positive())
+      .optional()
+      .nullable(),
+    relatedAgentIds: z.array(z.number().int().positive()).optional().nullable(),
   })
   .required();
 
