@@ -48,7 +48,7 @@ export class CustomersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findById(@Param('id') id: number) {
     return this.utilsProvider.responseBuilder.success(
       await this.customersService.findById(id, {
         include: [

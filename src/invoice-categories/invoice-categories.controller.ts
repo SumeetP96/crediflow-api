@@ -46,7 +46,7 @@ export class InvoiceCategoriesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findById(@Param('id') id: number) {
     return this.utilsProvider.responseBuilder.success(
       await this.invoiceCategoriesService.findById(id),
     );

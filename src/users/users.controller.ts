@@ -46,7 +46,7 @@ export class UsersController {
 
   @Get(':id')
   @UseFilters(AllExceptionsFilter)
-  async findOne(@Param('id') id: number) {
+  async findById(@Param('id') id: number) {
     return this.userTransformService.transformedSuccessResponse(
       await this.usersService.findById(id),
     );

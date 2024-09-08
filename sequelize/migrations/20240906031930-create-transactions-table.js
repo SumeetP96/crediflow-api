@@ -5,7 +5,7 @@ module.exports = {
   async up(queryInterface) {
     await queryInterface.sequelize.query(`
       DROP TYPE IF EXISTS enum_transaction_status CASCADE;
-      CREATE TYPE enum_transaction_status AS ENUM ('complete', 'processing', 'on_hold', 'failed', 'cancelled');
+      CREATE TYPE enum_transaction_status AS ENUM ('completed', 'processing', 'on_hold', 'failed', 'cancelled');
     `);
 
     await queryInterface.sequelize.query(`

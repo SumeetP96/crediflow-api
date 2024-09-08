@@ -48,7 +48,7 @@ export class Transaction extends Model {
 
   @Column(
     DataType.ENUM(
-      TransactionStatus.COMPLETE,
+      TransactionStatus.COMPLETED,
       TransactionStatus.PROCESSING,
       TransactionStatus.ON_HOLD,
       TransactionStatus.FAILED,
