@@ -3,12 +3,14 @@ import { InjectModel } from '@nestjs/sequelize';
 import {
   CreateOptions,
   DestroyOptions,
-  FindOptions,
+  FindAndCountOptions,
+  Op,
   RestoreOptions,
   UpdateOptions,
 } from 'sequelize';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { FindAllUsersQuery } from '../dto/find-all-users-query-dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 
@@ -30,8 +32,45 @@ export class UsersService {
     return await this.userModel.create(createUserDto, options);
   }
 
-  async findAll(options?: FindOptions): Promise<User[]> {
-    return await this.userModel.findAll(options);
+  async findAllWithCount(
+    query: FindAllUsersQuery,
+    options?: FindAndCountOptions,
+  ): Promise<{ count: number; rows: User[] }> {
+    const where = {};
+
+    if (query.roles?.length) {
+      where['role'] = { [Op.in]: query.roles };
+    }
+
+    if (query.status && query.status !== 'all') {
+      where['status'] = query.status;
+    }
+
+    if (query.search) {
+      where[Op.or] = ['name', 'username'].map((field) => ({
+        [field]: { [Op.like]: `%${query.search}%` },
+      }));
+    }
+
+    const order = [];
+
+    if (
+      query.sortBy &&
+      ['asc', 'desc'].includes(query.sortOrder.toLowerCase())
+    ) {
+      order.push([query.sortBy, query.sortOrder]);
+    } else {
+      order.push(['username', 'asc']);
+    }
+
+    return await this.userModel.findAndCountAll({
+      where,
+      attributes: { exclude: ['password'] },
+      order,
+      limit: query.perPage,
+      offset: query.page * query.perPage,
+      ...(options || {}),
+    });
   }
 
   async findById(id: number): Promise<User> {

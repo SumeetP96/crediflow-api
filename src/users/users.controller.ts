@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseFilters,
   UsePipes,
 } from '@nestjs/common';
@@ -13,6 +14,10 @@ import { AllExceptionsFilter } from 'src/common/exception-filters/all-exception.
 import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
 import { CreateUserDto, createUserSchema } from './dto/create-user.dto';
+import {
+  FindAllUsersQuery,
+  findAllUsersSchema,
+} from './dto/find-all-users-query-dto';
 import { UpdateUserDto, updateUserSchema } from './dto/update-user.dto';
 import { UserTransformService } from './services/user-transform.service';
 import { UsersService } from './services/users.service';
@@ -35,13 +40,12 @@ export class UsersController {
     );
   }
 
+  @UsePipes(new ZodValidationPipe({ query: findAllUsersSchema }))
   @Get()
-  @UseFilters(AllExceptionsFilter)
-  async findAll() {
-    const data = await this.usersService.findAll({
-      attributes: { exclude: ['password'] },
-    });
-    return this.utilsProvider.responseBuilder.success(data);
+  async findAll(@Query() query: FindAllUsersQuery) {
+    return this.utilsProvider.responseBuilder.success(
+      await this.usersService.findAllWithCount(query),
+    );
   }
 
   @Get(':id')
@@ -61,7 +65,6 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseFilters(AllExceptionsFilter)
   async delete(@Param('id') id: number) {
     return this.userTransformService.transformedSuccessResponse(
       await this.usersService.delete(id),
@@ -70,7 +73,6 @@ export class UsersController {
   }
 
   @Post('restore/:id')
-  @UseFilters(AllExceptionsFilter)
   async restore(@Param('id') id: number) {
     return this.userTransformService.transformedSuccessResponse(
       await this.usersService.restore(id),
