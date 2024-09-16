@@ -67,8 +67,8 @@ export class UsersService {
       where,
       attributes: { exclude: ['password'] },
       order,
-      limit: query.perPage,
       offset: query.page * query.perPage,
+      limit: query.perPage,
       ...(options || {}),
     });
   }

@@ -1,7 +1,7 @@
 {
-  "name": "rtc-customers",
+  "name": "cred-bud",
   "version": "0.0.1",
-  "description": "RTC Customers",
+  "description": "Credit Buddy API Server",
   "author": "SumeetP96",
   "private": true,
   "license": "UNLICENSED",
