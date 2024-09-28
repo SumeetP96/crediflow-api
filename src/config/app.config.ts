@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-interface AppConfig {
+export interface IAppConfig {
   env: string;
   port: number;
 }
@@ -12,7 +12,7 @@ export const appValidationSchema = {
 
 const { env } = process;
 
-export default (): AppConfig => ({
+export default (): IAppConfig => ({
   env: env.NODE_ENV,
   port: parseInt(env.NODE_PORT, 10) || 3000,
 });

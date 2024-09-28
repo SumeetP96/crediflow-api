@@ -8,7 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
-import { UserRole, UserStatus } from '../user.interfaces';
+import { UserRole, UserStatus } from '../user.types';
 
 @Table({
   tableName: 'users',
@@ -21,7 +21,7 @@ export class User extends Model {
   @Column
   username: string;
 
-  @Column(DataType.STRING)
+  @Column
   password: string;
 
   @Column(

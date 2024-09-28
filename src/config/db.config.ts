@@ -1,7 +1,7 @@
 import { SequelizeModuleOptions } from '@nestjs/sequelize';
 import * as Joi from 'joi';
 
-interface DatabaseConfig {
+export interface IDatabaseConfig {
   postgres: SequelizeModuleOptions;
 }
 
@@ -14,7 +14,7 @@ export const dbValidationSchema = {
 };
 
 const { env } = process;
-export default (): DatabaseConfig => ({
+export default (): IDatabaseConfig => ({
   postgres: {
     dialect: 'postgres',
     host: env.PG_DB_HOST,

@@ -1,21 +1,24 @@
 import * as Joi from 'joi';
 
-interface AuthConfig {
+export interface IAuthConfig {
   jwtSecret: string;
-  jwtExpiry: string | number;
+  authExpiry: string | number;
   bcryptSaltRounds: number;
+  authCookie: string;
 }
 
 export const authValidationSchema = {
   JWT_SECRET: Joi.string().required(),
-  JWT_EXPIRY: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
   BCRYPT_SALT_ROUNDS: Joi.number().integer().min(4).max(12).required(),
+  AUTH_EXPIRY: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+  AUTH_COOKIE: Joi.string().required(),
 };
 
 const { env } = process;
 
-export default (): AuthConfig => ({
+export default (): IAuthConfig => ({
   jwtSecret: env.JWT_SECRET,
-  jwtExpiry: env.JWT_EXPIRY,
   bcryptSaltRounds: parseInt(env.BCRYPT_SALT_ROUNDS, 10),
+  authExpiry: env.AUTH_EXPIRY,
+  authCookie: env.AUTH_COOKIE,
 });
