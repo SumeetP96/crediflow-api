@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { UserRole, UserStatus } from '../user.interfaces';
+import { UserRole, UserStatus } from '../user.types';
 
 export const createUserSchema = z
   .object({
-    name: z.string(),
-    username: z.string().min(3).max(20),
-    password: z.string().min(6).max(100),
+    name: z.string().min(2).max(100),
+    username: z.string().min(4).max(20),
+    password: z.string().min(6).max(40),
     confirmPassword: z.string().min(6).max(100),
     role: z.enum([UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]),
     status: z.enum([UserStatus.ACTIVE, UserStatus.IN_ACTIVE]),

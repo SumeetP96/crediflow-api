@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserRole, UserStatus } from '../user.interfaces';
+import { UserRole, UserStatus } from '../user.types';
 
 export const updateUserSchema = z
   .object({

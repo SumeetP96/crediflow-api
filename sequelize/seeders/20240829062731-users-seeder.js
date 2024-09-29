@@ -22,6 +22,19 @@ const roles = {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
+    const users = [];
+    for (let i = 0; i < 200; i++) {
+      users.push({
+        name: 'Admin',
+        username: `admin${i}`,
+        password: await hash('password'),
+        role: roles.admin,
+        status: status.active,
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+    }
+
     await queryInterface.bulkInsert(
       'users',
       [
@@ -52,6 +65,7 @@ module.exports = {
           created_at: new Date(),
           updated_at: new Date(),
         },
+        ...users,
       ],
       {},
     );

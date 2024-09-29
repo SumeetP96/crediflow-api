@@ -19,7 +19,7 @@ import { UsersService } from 'src/users/services/users.service';
 import { ITransformedUser } from 'src/users/user.types';
 import { Public } from './decorators/public.decorator';
 import { RequestWithDbUser, RequestWithJwtParsedUser } from './dto/request-dto';
-import { signInSchema } from './dto/signin-dto';
+import { signInSchema } from './dto/sign-in-dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthService } from './services/auth.service';
@@ -59,6 +59,19 @@ export class AuthController {
     return this.utilsProvider.responseBuilder.success<ITransformedUser>(
       transformed,
       'Login successful',
+    );
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(
+    @Request() req: RequestWithJwtParsedUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.clearCookie(this.configService.get('authCookie'));
+    return this.utilsProvider.responseBuilder.success(
+      {},
+      'Logged out successfully',
     );
   }
 

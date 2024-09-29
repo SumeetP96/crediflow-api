@@ -36,35 +36,36 @@ export class UsersService {
     query: FindAllUsersQuery,
     options?: FindAndCountOptions,
   ): Promise<{ count: number; rows: User[] }> {
-    const where = {};
+    const filters = this.utilsProvider.queryBuilder.whereClauseFromFields<User>(
+      [
+        { field: 'id', matchType: 'exact' },
+        { field: 'name', matchType: 'fuzzy' },
+        { field: 'username', matchType: 'fuzzy' },
+        { field: 'role', matchType: 'multiple' },
+        { field: 'status', matchType: 'exact' },
+        { field: 'createdAt', matchType: 'daterange' },
+      ],
+      query,
+    );
 
-    if (query.roles?.length) {
-      where['role'] = { [Op.in]: query.roles };
-    }
+    const search =
+      this.utilsProvider.queryBuilder.whereClauseFromSearchFields<User>(
+        ['username'],
+        query.search,
+      );
 
-    if (query.status && query.status !== 'all') {
-      where['status'] = query.status;
-    }
-
-    if (query.search) {
-      where[Op.or] = ['name', 'username'].map((field) => ({
-        [field]: { [Op.like]: `%${query.search}%` },
-      }));
-    }
-
-    const order = [];
-
-    if (
-      query.sortBy &&
-      ['asc', 'desc'].includes(query.sortOrder.toLowerCase())
-    ) {
-      order.push([query.sortBy, query.sortOrder]);
-    } else {
-      order.push(['username', 'asc']);
-    }
+    const order = this.utilsProvider.queryBuilder.orderByField<User>(
+      ['createdAt', 'desc'],
+      [query.sortBy as keyof User, query.sortOrder],
+    );
 
     return await this.userModel.findAndCountAll({
-      where,
+      where: {
+        [Op.and]: {
+          ...filters,
+          ...search,
+        },
+      },
       attributes: { exclude: ['password'] },
       order,
       offset: query.page * query.perPage,
