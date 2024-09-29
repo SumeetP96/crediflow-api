@@ -13,63 +13,72 @@ export interface IQueryBuilderWhereField<T> {
   matchType: TQueryBuilderWhereFieldMatchType;
 }
 
-export const whereClauseFromFields = <T = any, Q = Record<string, any>>(
-  fields: IQueryBuilderWhereField<T>[],
+export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
   query: Q,
-): WhereOptions => {
-  console.log('🚀 ~ query:', query);
-  const where: WhereOptions = {};
+  fields: IQueryBuilderWhereField<T>[],
+): WhereOptions | null => {
+  const whereConditions = [];
 
   fields.forEach(({ field, matchType }) => {
     const fieldValue = query[field as string];
 
     if (matchType === 'exact' && fieldValue !== undefined) {
-      where[field as string] = { [Op.eq]: fieldValue };
+      whereConditions.push({
+        [field as string]: { [Op.eq]: fieldValue },
+      });
     } else if (matchType === 'fuzzy' && fieldValue !== undefined) {
-      where[field as string] = { [Op.iLike]: `%${String(fieldValue)}%` };
+      whereConditions.push({
+        [field as string]: { [Op.iLike]: `%${String(fieldValue)}%` },
+      });
     } else if (matchType === 'multiple' && Array.isArray(fieldValue)) {
-      where[field as string] = { [Op.in]: fieldValue };
+      whereConditions.push({
+        [field as string]: { [Op.in]: fieldValue },
+      });
     } else if (
       matchType === 'date' &&
       fieldValue !== undefined &&
       dayjs(fieldValue).isValid()
     ) {
-      where[field as string] = {
-        [Op.gte]: dayjs(fieldValue).format('YYYY-MM-DD'),
-        [Op.lt]: dayjs(fieldValue).add(1, 'days').format('YYYY-MM-DD'),
-      };
+      whereConditions.push({
+        [field as string]: {
+          [Op.gte]: dayjs(fieldValue).format('YYYY-MM-DD'),
+          [Op.lt]: dayjs(fieldValue).add(1, 'days').format('YYYY-MM-DD'),
+        },
+      });
     } else if (
       matchType === 'daterange' &&
       Array.isArray(fieldValue) &&
       fieldValue.filter((d) => dayjs(d).isValid()).length === 2
     ) {
-      where[field as string] = {
-        [Op.gte]: dayjs(fieldValue[0]).format('YYYY-MM-DD'),
-        [Op.lt]: dayjs(fieldValue[1]).add(1, 'days').format('YYYY-MM-DD'),
-      };
+      whereConditions.push({
+        [field as string]: {
+          [Op.gte]: dayjs(fieldValue[0]).format('YYYY-MM-DD'),
+          [Op.lt]: dayjs(fieldValue[1]).add(1, 'days').format('YYYY-MM-DD'),
+        },
+      });
     }
   });
 
-  return { [Op.and]: where };
+  return whereConditions.length ? { [Op.and]: whereConditions } : null;
 };
 
-export const whereClauseFromSearchFields = <T>(
+export const whereClausesFromSearch = <T>(
+  searchTerm: string,
   searchFields: Array<keyof T>,
-  searchTerm?: string,
-): WhereOptions => {
+): WhereOptions | null => {
   if (!searchTerm) {
-    return {};
+    return null;
   }
 
-  const where: WhereOptions = {};
+  const whereCondition = [];
 
   searchFields.forEach((field) => {
-    where[field as string] = {
-      [Op.iLike]: `%${searchTerm}%`,
-    };
+    whereCondition.push({
+      [field as string]: { [Op.like]: `%${searchTerm}%` },
+    });
   });
 
-  return { [Op.or]: where };
+  return whereCondition.length ? { [Op.or]: whereCondition } : null;
 };
 
 export type TOrderByField<T = Record<string, any>> = [
@@ -88,4 +97,19 @@ export const orderByField = <T>(
   }
 
   return [order] as Order;
+};
+
+export const joinWhereClauses = (
+  joinBy: 'or' | 'and',
+  clauses: WhereOptions[],
+): WhereOptions => {
+  const filteredClauses = clauses.filter((c) => c !== null);
+
+  if (filteredClauses.length === 1) {
+    return filteredClauses[0];
+  }
+
+  return {
+    [Op[joinBy]]: filteredClauses,
+  };
 };

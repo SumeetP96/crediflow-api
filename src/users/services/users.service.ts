@@ -4,7 +4,6 @@ import {
   CreateOptions,
   DestroyOptions,
   FindAndCountOptions,
-  Op,
   RestoreOptions,
   UpdateOptions,
 } from 'sequelize';
@@ -36,23 +35,26 @@ export class UsersService {
     query: FindAllUsersQuery,
     options?: FindAndCountOptions,
   ): Promise<{ count: number; rows: User[] }> {
-    const filters = this.utilsProvider.queryBuilder.whereClauseFromFields<User>(
-      [
+    const filterClauses =
+      this.utilsProvider.queryBuilder.whereClausesFromFilters<User>(query, [
         { field: 'id', matchType: 'exact' },
         { field: 'name', matchType: 'fuzzy' },
         { field: 'username', matchType: 'fuzzy' },
         { field: 'role', matchType: 'multiple' },
         { field: 'status', matchType: 'exact' },
         { field: 'createdAt', matchType: 'daterange' },
-      ],
-      query,
-    );
+      ]);
 
-    const search =
-      this.utilsProvider.queryBuilder.whereClauseFromSearchFields<User>(
-        ['username'],
+    const searchClauses =
+      this.utilsProvider.queryBuilder.whereClausesFromSearch<User>(
         query.search,
+        ['name', 'username'],
       );
+
+    const where = this.utilsProvider.queryBuilder.joinWhereClauses('and', [
+      filterClauses,
+      searchClauses,
+    ]);
 
     const order = this.utilsProvider.queryBuilder.orderByField<User>(
       ['createdAt', 'desc'],
@@ -60,12 +62,7 @@ export class UsersService {
     );
 
     return await this.userModel.findAndCountAll({
-      where: {
-        [Op.and]: {
-          ...filters,
-          ...search,
-        },
-      },
+      where,
       attributes: { exclude: ['password'] },
       order,
       offset: query.page * query.perPage,
