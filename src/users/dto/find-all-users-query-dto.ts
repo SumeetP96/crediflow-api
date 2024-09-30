@@ -20,6 +20,9 @@ export const findAllUsersSchema = z.object({
     .optional()
     .nullable(),
   createdAt: z.string().optional().nullable(),
+  updatedAt: z.string().optional().nullable(),
+  deletedAt: z.string().optional().nullable(),
+  isDeletedShown: z.enum(['yes', 'no']).optional().nullable(),
 });
 
 export type FindAllUsersQuery = z.infer<typeof findAllUsersSchema>;

@@ -90,13 +90,13 @@ export const orderByField = <T>(
   defaultOrderBy: TOrderByField<T>,
   orderBy?: TOrderByField<T>,
 ): Order => {
-  let order = defaultOrderBy;
+  let order = [defaultOrderBy];
 
   if (orderBy.filter(Boolean).length === 2 && orderBy[1] !== 'none') {
-    order = orderBy;
+    order = [orderBy];
   }
 
-  return [order] as Order;
+  return order as Order;
 };
 
 export const joinWhereClauses = (
@@ -112,4 +112,9 @@ export const joinWhereClauses = (
   return {
     [Op[joinBy]]: filteredClauses,
   };
+};
+
+export const pagination = (page: number, perPage: number): number[] => {
+  const offset = (page - 1) * perPage;
+  return [offset, perPage];
 };

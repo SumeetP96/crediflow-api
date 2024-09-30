@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   CreateOptions,
   DestroyOptions,
   FindAndCountOptions,
+  Op,
   RestoreOptions,
   UpdateOptions,
 } from 'sequelize';
@@ -25,6 +26,20 @@ export class UsersService {
     createUserDto: CreateUserDto,
     options?: CreateOptions,
   ): Promise<User> {
+    const existingCount = await this.userModel.count({
+      where: { username: createUserDto.username },
+    });
+
+    if (existingCount) {
+      throw new BadRequestException(
+        this.utilsProvider.zod.customFieldIssue<User>(
+          'username',
+          'Username already in use',
+          'Validation Error',
+        ),
+      );
+    }
+
     createUserDto.password = await this.utilsProvider.bcrypt.hashPassword(
       createUserDto.password,
     );
@@ -42,7 +57,9 @@ export class UsersService {
         { field: 'username', matchType: 'fuzzy' },
         { field: 'role', matchType: 'multiple' },
         { field: 'status', matchType: 'exact' },
-        { field: 'createdAt', matchType: 'daterange' },
+        { field: 'createdAt', matchType: 'date' },
+        { field: 'updatedAt', matchType: 'date' },
+        { field: 'deletedAt', matchType: 'date' },
       ]);
 
     const searchClauses =
@@ -61,18 +78,25 @@ export class UsersService {
       [query.sortBy as keyof User, query.sortOrder],
     );
 
+    const [offset, limit] = this.utilsProvider.queryBuilder.pagination(
+      query.page,
+      query.perPage,
+    );
+    console.log('🚀 ~ UsersService ~ offset:', offset);
+
     return await this.userModel.findAndCountAll({
       where,
       attributes: { exclude: ['password'] },
       order,
-      offset: query.page * query.perPage,
-      limit: query.perPage,
+      offset,
+      limit,
       ...(options || {}),
+      paranoid: query.isDeletedShown === 'yes',
     });
   }
 
   async findById(id: number): Promise<User> {
-    return await this.userModel.findByPk(id);
+    return await this.userModel.findByPk(id, { paranoid: false });
   }
 
   async findByUsername(username: string): Promise<User> {
@@ -86,6 +110,20 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
     options?: UpdateOptions,
   ): Promise<User> {
+    const existingCount = await this.userModel.count({
+      where: { id: { [Op.ne]: id }, username: updateUserDto.username },
+    });
+
+    if (existingCount) {
+      throw new BadRequestException(
+        this.utilsProvider.zod.customFieldIssue<User>(
+          'username',
+          'Username already in use',
+          'Validation Error',
+        ),
+      );
+    }
+
     await this.userModel.update(updateUserDto, {
       where: { id },
       ...(options || {}),
