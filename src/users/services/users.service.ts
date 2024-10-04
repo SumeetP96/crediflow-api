@@ -82,7 +82,6 @@ export class UsersService {
       query.page,
       query.perPage,
     );
-    console.log('🚀 ~ UsersService ~ offset:', offset);
 
     return await this.userModel.findAndCountAll({
       where,
