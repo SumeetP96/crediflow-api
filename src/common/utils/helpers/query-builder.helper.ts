@@ -74,7 +74,7 @@ export const whereClausesFromSearch = <T>(
 
   searchFields.forEach((field) => {
     whereCondition.push({
-      [field as string]: { [Op.like]: `%${searchTerm}%` },
+      [field as string]: { [Op.iLike]: `%${searchTerm}%` },
     });
   });
 

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 'use strict';
 
+const { faker } = require('@faker-js/faker');
 const bcrypt = require('bcrypt');
 
 async function hash(plaintextPassword) {
@@ -25,8 +26,8 @@ module.exports = {
     const users = [];
     for (let i = 0; i < 200; i++) {
       users.push({
-        name: 'Admin',
-        username: `admin${i}`,
+        name: faker.person.fullName(),
+        username: faker.internet.userName(),
         password: await hash('password'),
         role: roles.admin,
         status: status.active,
