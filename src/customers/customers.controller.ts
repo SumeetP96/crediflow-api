@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseFilters,
   UsePipes,
 } from '@nestjs/common';
@@ -16,6 +17,10 @@ import {
   CreateCustomerDto,
   createCustomerSchema,
 } from './dto/create-customer.dto';
+import {
+  FindAllCustomersQuery,
+  findAllCustomersSchema,
+} from './dto/find-all-customers-query-dto';
 import {
   UpdateCustomerDto,
   updateCustomerSchema,
@@ -41,9 +46,10 @@ export class CustomersController {
   }
 
   @Get()
-  async findAll() {
+  @UsePipes(new ZodValidationPipe({ query: findAllCustomersSchema }))
+  async findAll(@Query() query: FindAllCustomersQuery) {
     return this.utilsProvider.responseBuilder.success(
-      await this.customersService.findAll(),
+      await this.customersService.findAllWithCount(query),
     );
   }
 

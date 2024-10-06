@@ -65,7 +65,10 @@ export class UsersService {
     const searchClauses =
       this.utilsProvider.queryBuilder.whereClausesFromSearch<User>(
         query.search,
-        ['name', 'username'],
+        [
+          { field: 'name', matchType: 'fuzzy' },
+          { field: 'username', matchType: 'fuzzy' },
+        ],
       );
 
     const where = this.utilsProvider.queryBuilder.joinWhereClauses('and', [

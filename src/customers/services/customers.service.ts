@@ -3,11 +3,14 @@ import { InjectModel } from '@nestjs/sequelize';
 import {
   CreateOptions,
   DestroyOptions,
+  FindAndCountOptions,
   FindOptions,
   RestoreOptions,
   UpdateOptions,
 } from 'sequelize';
+import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
+import { FindAllCustomersQuery } from '../dto/find-all-customers-query-dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { Customer } from '../entities/customer.entity';
 
@@ -16,6 +19,7 @@ export class CustomersService {
   constructor(
     @InjectModel(Customer)
     private customerModel: typeof Customer,
+    private readonly utilsProvider: UtilsProvider,
   ) {}
   async create(
     createCustomerDto: CreateCustomerDto,
@@ -24,8 +28,56 @@ export class CustomersService {
     return await this.customerModel.create(createCustomerDto, options);
   }
 
-  async findAll(options?: FindOptions): Promise<Customer[]> {
-    return await this.customerModel.findAll(options);
+  async findAllWithCount(
+    query: FindAllCustomersQuery,
+    options?: FindAndCountOptions,
+  ): Promise<{ count: number; rows: Customer[] }> {
+    const filterClauses =
+      this.utilsProvider.queryBuilder.whereClausesFromFilters<Customer>(query, [
+        { field: 'id', matchType: 'exact' },
+        { field: 'name', matchType: 'fuzzy' },
+        { field: 'contactNumbers', matchType: 'fuzzy-from-array' },
+        { field: 'addresses', matchType: 'fuzzy-from-array' },
+        { field: 'isReseller', matchType: 'exact' },
+        { field: 'status', matchType: 'exact' },
+        { field: 'createdAt', matchType: 'date' },
+        { field: 'updatedAt', matchType: 'date' },
+        { field: 'deletedAt', matchType: 'date' },
+      ]);
+
+    const searchClauses =
+      this.utilsProvider.queryBuilder.whereClausesFromSearch<Customer>(
+        query.search,
+        [
+          { field: 'name', matchType: 'fuzzy' },
+          { field: 'contactNumbers', matchType: 'fuzzy-from-array' },
+          { field: 'addresses', matchType: 'fuzzy-from-array' },
+        ],
+      );
+
+    const where = this.utilsProvider.queryBuilder.joinWhereClauses('and', [
+      filterClauses,
+      searchClauses,
+    ]);
+
+    const order = this.utilsProvider.queryBuilder.orderByField<Customer>(
+      ['createdAt', 'desc'],
+      [query.sortBy as keyof Customer, query.sortOrder],
+    );
+
+    const [offset, limit] = this.utilsProvider.queryBuilder.pagination(
+      query.page,
+      query.perPage,
+    );
+
+    return await this.customerModel.findAndCountAll({
+      where,
+      order,
+      offset,
+      limit,
+      ...(options || {}),
+      paranoid: query.isDeletedShown === 'yes',
+    });
   }
 
   async findById(id: number, options?: FindOptions): Promise<Customer> {

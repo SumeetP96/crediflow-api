@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
-import { Op, Order, WhereOptions } from 'sequelize';
+import snakeCase from 'lodash.snakecase';
+import sequelize, { Op, Order, WhereOptions } from 'sequelize';
 
 export type TQueryBuilderWhereFieldMatchType =
   | 'exact'
   | 'fuzzy'
+  | 'fuzzy-from-array'
   | 'multiple'
   | 'date'
   | 'daterange';
@@ -22,40 +24,70 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
   fields.forEach(({ field, matchType }) => {
     const fieldValue = query[field as string];
 
-    if (matchType === 'exact' && fieldValue !== undefined) {
-      whereConditions.push({
-        [field as string]: { [Op.eq]: fieldValue },
-      });
-    } else if (matchType === 'fuzzy' && fieldValue !== undefined) {
-      whereConditions.push({
-        [field as string]: { [Op.iLike]: `%${String(fieldValue)}%` },
-      });
-    } else if (matchType === 'multiple' && Array.isArray(fieldValue)) {
-      whereConditions.push({
-        [field as string]: { [Op.in]: fieldValue },
-      });
-    } else if (
-      matchType === 'date' &&
-      fieldValue !== undefined &&
-      dayjs(fieldValue).isValid()
-    ) {
-      whereConditions.push({
-        [field as string]: {
-          [Op.gte]: dayjs(fieldValue).format('YYYY-MM-DD'),
-          [Op.lt]: dayjs(fieldValue).add(1, 'days').format('YYYY-MM-DD'),
-        },
-      });
-    } else if (
-      matchType === 'daterange' &&
-      Array.isArray(fieldValue) &&
-      fieldValue.filter((d) => dayjs(d).isValid()).length === 2
-    ) {
-      whereConditions.push({
-        [field as string]: {
-          [Op.gte]: dayjs(fieldValue[0]).format('YYYY-MM-DD'),
-          [Op.lt]: dayjs(fieldValue[1]).add(1, 'days').format('YYYY-MM-DD'),
-        },
-      });
+    switch (matchType) {
+      case 'exact':
+        if (fieldValue !== undefined) {
+          whereConditions.push({
+            [field as string]: { [Op.eq]: fieldValue },
+          });
+        }
+        break;
+
+      case 'fuzzy':
+        if (fieldValue !== undefined) {
+          whereConditions.push({
+            [field as string]: { [Op.iLike]: `%${String(fieldValue)}%` },
+          });
+        }
+        break;
+
+      case 'fuzzy-from-array':
+        if (fieldValue !== undefined) {
+          whereConditions.push(
+            sequelize.where(
+              sequelize.fn(
+                'array_to_string',
+                sequelize.col('contact_numbers'),
+                ',',
+              ),
+              { [Op.iLike]: `%${String(fieldValue)}%` },
+            ),
+          );
+        }
+        break;
+
+      case 'multiple':
+        if (Array.isArray(fieldValue)) {
+          whereConditions.push({
+            [field as string]: { [Op.in]: fieldValue },
+          });
+        }
+        break;
+
+      case 'date':
+        if (fieldValue !== undefined && dayjs(fieldValue).isValid()) {
+          whereConditions.push({
+            [field as string]: {
+              [Op.gte]: dayjs(fieldValue).format('YYYY-MM-DD'),
+              [Op.lt]: dayjs(fieldValue).add(1, 'days').format('YYYY-MM-DD'),
+            },
+          });
+        }
+        break;
+
+      case 'daterange':
+        if (
+          Array.isArray(fieldValue) &&
+          fieldValue.filter((d) => dayjs(d).isValid()).length === 2
+        ) {
+          whereConditions.push({
+            [field as string]: {
+              [Op.gte]: dayjs(fieldValue[0]).format('YYYY-MM-DD'),
+              [Op.lt]: dayjs(fieldValue[1]).add(1, 'days').format('YYYY-MM-DD'),
+            },
+          });
+        }
+        break;
     }
   });
 
@@ -64,21 +96,38 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
 
 export const whereClausesFromSearch = <T>(
   searchTerm: string,
-  searchFields: Array<keyof T>,
+  searchFields: IQueryBuilderWhereField<T>[],
 ): WhereOptions | null => {
   if (!searchTerm) {
     return null;
   }
 
-  const whereCondition = [];
+  const whereConditions = [];
 
-  searchFields.forEach((field) => {
-    whereCondition.push({
-      [field as string]: { [Op.iLike]: `%${searchTerm}%` },
-    });
+  searchFields.forEach(({ field, matchType }) => {
+    switch (matchType) {
+      case 'fuzzy':
+        whereConditions.push({
+          [field as string]: { [Op.iLike]: `%${searchTerm}%` },
+        });
+        break;
+
+      case 'fuzzy-from-array':
+        whereConditions.push(
+          sequelize.where(
+            sequelize.fn(
+              'array_to_string',
+              sequelize.col(snakeCase(field as string)),
+              ',',
+            ),
+            { [Op.iLike]: `%${String(searchTerm)}%` },
+          ),
+        );
+        break;
+    }
   });
 
-  return whereCondition.length ? { [Op.or]: whereCondition } : null;
+  return whereConditions.length ? { [Op.or]: whereConditions } : null;
 };
 
 export type TOrderByField<T = Record<string, any>> = [
