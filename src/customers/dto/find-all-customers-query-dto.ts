@@ -13,6 +13,7 @@ export const findAllCustomersSchema = z.object({
     .optional()
     .nullable(),
   name: z.string().optional().nullable(),
+  parentName: z.string().optional().nullable(),
   contactNumbers: z.string().optional().nullable(),
   addresses: z.string().optional().nullable(),
   isReseller: z.enum(['yes', 'no']).optional().nullable(),

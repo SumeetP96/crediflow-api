@@ -51,19 +51,24 @@ export class UsersService {
     options?: FindAndCountOptions,
   ): Promise<{ count: number; rows: User[] }> {
     const filterClauses =
-      this.utilsProvider.queryBuilder.whereClausesFromFilters<User>(query, [
-        { field: 'id', matchType: 'exact' },
-        { field: 'name', matchType: 'fuzzy' },
-        { field: 'username', matchType: 'fuzzy' },
-        { field: 'role', matchType: 'multiple' },
-        { field: 'status', matchType: 'exact' },
-        { field: 'createdAt', matchType: 'date' },
-        { field: 'updatedAt', matchType: 'date' },
-        { field: 'deletedAt', matchType: 'date' },
-      ]);
+      this.utilsProvider.queryBuilder.whereClausesFromFilters<User>(
+        'User',
+        query,
+        [
+          { field: 'id', matchType: 'exact' },
+          { field: 'name', matchType: 'fuzzy' },
+          { field: 'username', matchType: 'fuzzy' },
+          { field: 'role', matchType: 'multiple' },
+          { field: 'status', matchType: 'exact' },
+          { field: 'createdAt', matchType: 'date' },
+          { field: 'updatedAt', matchType: 'date' },
+          { field: 'deletedAt', matchType: 'date' },
+        ],
+      );
 
     const searchClauses =
       this.utilsProvider.queryBuilder.whereClausesFromSearch<User>(
+        'User',
         query.search,
         [
           { field: 'name', matchType: 'fuzzy' },

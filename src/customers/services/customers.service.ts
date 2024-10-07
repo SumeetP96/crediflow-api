@@ -33,22 +33,34 @@ export class CustomersService {
     options?: FindAndCountOptions,
   ): Promise<{ count: number; rows: Customer[] }> {
     const filterClauses =
-      this.utilsProvider.queryBuilder.whereClausesFromFilters<Customer>(query, [
-        { field: 'id', matchType: 'exact' },
-        { field: 'name', matchType: 'fuzzy' },
-        { field: 'contactNumbers', matchType: 'fuzzy-from-array' },
-        { field: 'addresses', matchType: 'fuzzy-from-array' },
-        { field: 'isReseller', matchType: 'exact' },
-        { field: 'status', matchType: 'exact' },
-        { field: 'createdAt', matchType: 'date' },
-        { field: 'updatedAt', matchType: 'date' },
-        { field: 'deletedAt', matchType: 'date' },
-      ]);
+      this.utilsProvider.queryBuilder.whereClausesFromFilters<Customer>(
+        'Customer',
+        query,
+        [
+          { field: 'id', matchType: 'exact' },
+          { field: 'name', matchType: 'fuzzy' },
+          {
+            field: 'name',
+            matchType: 'fuzzy',
+            queryKey: 'parentName',
+            alias: 'parent',
+          },
+          { field: 'contactNumbers', matchType: 'fuzzy-from-array' },
+          { field: 'addresses', matchType: 'fuzzy-from-array' },
+          { field: 'isReseller', matchType: 'exact' },
+          { field: 'status', matchType: 'exact' },
+          { field: 'createdAt', matchType: 'date' },
+          { field: 'updatedAt', matchType: 'date' },
+          { field: 'deletedAt', matchType: 'date' },
+        ],
+      );
 
     const searchClauses =
       this.utilsProvider.queryBuilder.whereClausesFromSearch<Customer>(
+        'Customer',
         query.search,
         [
+          { field: 'name', matchType: 'fuzzy', alias: 'parent' },
           { field: 'name', matchType: 'fuzzy' },
           { field: 'contactNumbers', matchType: 'fuzzy-from-array' },
           { field: 'addresses', matchType: 'fuzzy-from-array' },
@@ -71,6 +83,11 @@ export class CustomersService {
     );
 
     return await this.customerModel.findAndCountAll({
+      include: {
+        model: Customer,
+        attributes: ['id', 'name'],
+        required: false,
+      },
       where,
       order,
       offset,
