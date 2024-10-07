@@ -11,24 +11,35 @@ export type TQueryBuilderWhereFieldMatchType =
   | 'daterange';
 
 export interface IQueryBuilderWhereField<T> {
+  queryKey?: string;
   field: keyof T;
   matchType: TQueryBuilderWhereFieldMatchType;
+  alias?: string;
 }
 
 export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
+  defaultAlias: string,
   query: Q,
   fields: IQueryBuilderWhereField<T>[],
 ): WhereOptions | null => {
   const whereConditions = [];
 
-  fields.forEach(({ field, matchType }) => {
-    const fieldValue = query[field as string];
+  fields.forEach(({ queryKey, field, matchType, alias: tableAlias }) => {
+    const fieldValue = query[queryKey ?? (field as string)];
+
+    const alias = tableAlias ?? defaultAlias;
+
+    let fieldName = `$${alias}.${field as string}$`;
+
+    if (matchType === 'fuzzy-from-array') {
+      fieldName = `${alias}.${snakeCase(field as string)}`;
+    }
 
     switch (matchType) {
       case 'exact':
         if (fieldValue !== undefined) {
           whereConditions.push({
-            [field as string]: { [Op.eq]: fieldValue },
+            [fieldName]: { [Op.eq]: fieldValue },
           });
         }
         break;
@@ -36,7 +47,7 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
       case 'fuzzy':
         if (fieldValue !== undefined) {
           whereConditions.push({
-            [field as string]: { [Op.iLike]: `%${String(fieldValue)}%` },
+            [fieldName]: { [Op.iLike]: `%${String(fieldValue)}%` },
           });
         }
         break;
@@ -45,11 +56,7 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
         if (fieldValue !== undefined) {
           whereConditions.push(
             sequelize.where(
-              sequelize.fn(
-                'array_to_string',
-                sequelize.col('contact_numbers'),
-                ',',
-              ),
+              sequelize.fn('array_to_string', sequelize.col(fieldName), ','),
               { [Op.iLike]: `%${String(fieldValue)}%` },
             ),
           );
@@ -59,7 +66,7 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
       case 'multiple':
         if (Array.isArray(fieldValue)) {
           whereConditions.push({
-            [field as string]: { [Op.in]: fieldValue },
+            [fieldName]: { [Op.in]: fieldValue },
           });
         }
         break;
@@ -67,7 +74,7 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
       case 'date':
         if (fieldValue !== undefined && dayjs(fieldValue).isValid()) {
           whereConditions.push({
-            [field as string]: {
+            [fieldName]: {
               [Op.gte]: dayjs(fieldValue).format('YYYY-MM-DD'),
               [Op.lt]: dayjs(fieldValue).add(1, 'days').format('YYYY-MM-DD'),
             },
@@ -81,7 +88,7 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
           fieldValue.filter((d) => dayjs(d).isValid()).length === 2
         ) {
           whereConditions.push({
-            [field as string]: {
+            [fieldName]: {
               [Op.gte]: dayjs(fieldValue[0]).format('YYYY-MM-DD'),
               [Op.lt]: dayjs(fieldValue[1]).add(1, 'days').format('YYYY-MM-DD'),
             },
@@ -95,6 +102,7 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
 };
 
 export const whereClausesFromSearch = <T>(
+  defaultAlias: string,
   searchTerm: string,
   searchFields: IQueryBuilderWhereField<T>[],
 ): WhereOptions | null => {
@@ -104,22 +112,26 @@ export const whereClausesFromSearch = <T>(
 
   const whereConditions = [];
 
-  searchFields.forEach(({ field, matchType }) => {
+  searchFields.forEach(({ field, matchType, alias: tableAlias }) => {
+    const alias = tableAlias ?? defaultAlias;
+
+    let fieldName = `$${alias}.${field as string}$`;
+
+    if (matchType === 'fuzzy-from-array') {
+      fieldName = `${alias}.${snakeCase(field as string)}`;
+    }
+
     switch (matchType) {
       case 'fuzzy':
         whereConditions.push({
-          [field as string]: { [Op.iLike]: `%${searchTerm}%` },
+          [fieldName]: { [Op.iLike]: `%${searchTerm}%` },
         });
         break;
 
       case 'fuzzy-from-array':
         whereConditions.push(
           sequelize.where(
-            sequelize.fn(
-              'array_to_string',
-              sequelize.col(snakeCase(field as string)),
-              ',',
-            ),
+            sequelize.fn('array_to_string', sequelize.col(fieldName), ','),
             { [Op.iLike]: `%${String(searchTerm)}%` },
           ),
         );
@@ -131,7 +143,7 @@ export const whereClausesFromSearch = <T>(
 };
 
 export type TOrderByField<T = Record<string, any>> = [
-  keyof T,
+  ...(keyof T)[],
   'asc' | 'desc' | 'none',
 ];
 
@@ -142,10 +154,12 @@ export const orderByField = <T>(
   let order = [defaultOrderBy];
 
   if (orderBy.filter(Boolean).length === 2 && orderBy[1] !== 'none') {
-    order = [orderBy];
+    const field = String(orderBy[0]).split('.');
+    const direction = orderBy[1];
+    order = [field.concat(direction as string) as TOrderByField<T>];
   }
 
-  return order as Order;
+  return order as unknown as Order;
 };
 
 export const joinWhereClauses = (
