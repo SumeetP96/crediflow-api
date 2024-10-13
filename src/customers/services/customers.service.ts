@@ -9,6 +9,7 @@ import {
   UpdateOptions,
 } from 'sequelize';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
+import { CustomerStatus, TCustomerOption } from '../customers.types';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { FindAllCustomersQuery } from '../dto/find-all-customers-query-dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
@@ -25,7 +26,13 @@ export class CustomersService {
     createCustomerDto: CreateCustomerDto,
     options?: CreateOptions,
   ): Promise<Customer> {
-    return await this.customerModel.create(createCustomerDto, options);
+    return await this.customerModel.create(
+      {
+        ...createCustomerDto,
+        balance: createCustomerDto.openingBalance,
+      },
+      options,
+    );
   }
 
   async findAllWithCount(
@@ -106,10 +113,28 @@ export class CustomersService {
     updateCustomerDto: UpdateCustomerDto,
     options?: UpdateOptions,
   ): Promise<Customer> {
-    await this.customerModel.update(updateCustomerDto, {
-      where: { id },
-      ...(options || {}),
+    const existing = await this.findById(id, {
+      attributes: ['balance', 'openingBalance'],
     });
+
+    let openingBalance = existing.openingBalance;
+    let balance = existing.balance;
+
+    if (updateCustomerDto.openingBalance) {
+      openingBalance = updateCustomerDto.openingBalance;
+      balance =
+        existing.balance -
+        existing.openingBalance +
+        updateCustomerDto.openingBalance;
+    }
+
+    await this.customerModel.update(
+      { ...updateCustomerDto, balance, openingBalance },
+      {
+        where: { id },
+        ...(options || {}),
+      },
+    );
     return await this.findById(id);
   }
 
@@ -128,5 +153,14 @@ export class CustomersService {
       ...(options || {}),
     });
     return await this.findById(id);
+  }
+
+  async options(): Promise<TCustomerOption[]> {
+    return await this.customerModel.findAll({
+      attributes: ['id', 'name'],
+      where: {
+        status: CustomerStatus.ACTIVE,
+      },
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CustomerStatus } from '../customers.interfaces';
+import { CustomerStatus } from '../customers.types';
 
 export const findAllCustomersSchema = z.object({
   page: z.string().transform((val) => parseInt(val, 10)),

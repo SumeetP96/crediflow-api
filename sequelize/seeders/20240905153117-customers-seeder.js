@@ -26,6 +26,7 @@ module.exports = {
           addresses: ['Ahmedabad, Gujarat', 'Mumbai, Maharashtra'],
           is_reseller: false,
           balance: 10000,
+          opening_balance: 2000,
           status: status.active,
         },
         {
@@ -35,6 +36,7 @@ module.exports = {
           addresses: ['Ahmedabad, Gujarat'],
           is_reseller: false,
           balance: 5000,
+          opening_balance: 5000,
           status: status.active,
         },
         {
@@ -43,6 +45,7 @@ module.exports = {
           addresses: ['Jodhpur, Rajasthan', 'Chennai, Tamil Nadu'],
           is_reseller: true,
           balance: 20000,
+          opening_balance: 4000,
           status: status.active,
         },
         {
@@ -52,6 +55,7 @@ module.exports = {
           addresses: ['Jodhpur, Rajasthan', 'Chennai, Tamil Nadu'],
           is_reseller: true,
           balance: 15000,
+          opening_balance: 10000,
           status: status.active,
         },
       ],

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CustomerStatus } from '../customers.interfaces';
+import { CustomerStatus } from '../customers.types';
 
 export const updateCustomerSchema = z
   .object({
@@ -11,7 +11,7 @@ export const updateCustomerSchema = z
       .optional()
       .nullable(),
     parentId: z.number().optional().nullable(),
-    balance: z.number().optional().nullable(),
+    openingBalance: z.number().optional().nullable(),
   })
   .required();
 

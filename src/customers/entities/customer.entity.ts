@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 import { InvoiceRelation } from 'src/invoices/entities/invoice-relations.entity';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
-import { CustomerStatus } from '../customers.interfaces';
+import { CustomerStatus } from '../customers.types';
 
 @Table({
   tableName: 'customers',
@@ -40,6 +40,10 @@ export class Customer extends Model {
   @Default(0)
   @Column(DataType.FLOAT)
   balance: number;
+
+  @Default(0)
+  @Column(DataType.FLOAT)
+  openingBalance: number;
 
   @Default(CustomerStatus.ACTIVE)
   @Column(DataType.ENUM(CustomerStatus.ACTIVE, CustomerStatus.IN_ACTIVE))

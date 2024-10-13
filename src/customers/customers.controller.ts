@@ -53,6 +53,14 @@ export class CustomersController {
     );
   }
 
+  @Get('/options')
+  async options() {
+    console.log('here');
+    return this.utilsProvider.responseBuilder.success(
+      await this.customersService.options(),
+    );
+  }
+
   @Get(':id')
   async findById(@Param('id') id: number) {
     return this.utilsProvider.responseBuilder.success(
