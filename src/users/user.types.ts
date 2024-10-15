@@ -6,7 +6,7 @@ export enum UserRole {
   EMPLOYEE = 'employee',
 }
 
-export enum UserStatus {
+export enum EUserStatus {
   ACTIVE = 'active',
   IN_ACTIVE = 'in_active',
 }
@@ -16,7 +16,7 @@ export interface ITransformedUser extends Partial<User> {
   name: string;
   username: string;
   role: UserRole;
-  status: UserStatus;
+  status: EUserStatus;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CustomerStatus } from '../customers.types';
+import { ECustomerStatus } from '../customers.types';
 
 export const updateCustomerSchema = z
   .object({
@@ -7,7 +7,7 @@ export const updateCustomerSchema = z
     contactNumbers: z.array(z.string()).optional().nullable(),
     addresses: z.array(z.string()).optional().nullable(),
     status: z
-      .enum([CustomerStatus.ACTIVE, CustomerStatus.IN_ACTIVE])
+      .enum([ECustomerStatus.ACTIVE, ECustomerStatus.IN_ACTIVE])
       .optional()
       .nullable(),
     parentId: z.number().optional().nullable(),

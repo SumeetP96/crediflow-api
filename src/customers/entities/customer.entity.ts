@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 import { InvoiceRelation } from 'src/invoices/entities/invoice-relations.entity';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
-import { CustomerStatus } from '../customers.types';
+import { ECustomerStatus, ICustomerContactNumber } from '../customers.types';
 
 @Table({
   tableName: 'customers',
@@ -27,12 +27,12 @@ export class Customer extends Model {
   name: string;
 
   @AllowNull
-  @Column(DataType.ARRAY(DataType.STRING))
-  contactNumbers: string[];
+  @Column(DataType.ARRAY(DataType.JSONB))
+  contactNumbers: ICustomerContactNumber[];
 
   @AllowNull
-  @Column(DataType.ARRAY(DataType.TEXT))
-  addresses: string[];
+  @Column(DataType.ARRAY(DataType.JSONB))
+  addresses: ICustomerContactNumber[];
 
   @Column
   isReseller: boolean;
@@ -45,9 +45,9 @@ export class Customer extends Model {
   @Column(DataType.FLOAT)
   openingBalance: number;
 
-  @Default(CustomerStatus.ACTIVE)
-  @Column(DataType.ENUM(CustomerStatus.ACTIVE, CustomerStatus.IN_ACTIVE))
-  status: CustomerStatus;
+  @Default(ECustomerStatus.ACTIVE)
+  @Column(DataType.ENUM(ECustomerStatus.ACTIVE, ECustomerStatus.IN_ACTIVE))
+  status: ECustomerStatus;
 
   // Relations
 

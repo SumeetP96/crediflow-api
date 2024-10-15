@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CustomerStatus } from '../customers.types';
+import { ECustomerStatus } from '../customers.types';
 
 export const findAllCustomersSchema = z.object({
   page: z.string().transform((val) => parseInt(val, 10)),
@@ -18,7 +18,7 @@ export const findAllCustomersSchema = z.object({
   addresses: z.string().optional().nullable(),
   isReseller: z.enum(['yes', 'no']).optional().nullable(),
   status: z
-    .enum([CustomerStatus.ACTIVE, CustomerStatus.IN_ACTIVE])
+    .enum([ECustomerStatus.ACTIVE, ECustomerStatus.IN_ACTIVE])
     .optional()
     .nullable(),
   createdAt: z.string().optional().nullable(),

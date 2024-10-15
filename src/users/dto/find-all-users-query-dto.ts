@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserStatus } from '../user.types';
+import { EUserStatus } from '../user.types';
 
 export const findAllUsersSchema = z.object({
   page: z.string().transform((val) => parseInt(val, 10)),
@@ -16,7 +16,7 @@ export const findAllUsersSchema = z.object({
   username: z.string().optional().nullable(),
   role: z.array(z.string()).optional().nullable(),
   status: z
-    .enum([UserStatus.ACTIVE, UserStatus.IN_ACTIVE])
+    .enum([EUserStatus.ACTIVE, EUserStatus.IN_ACTIVE])
     .optional()
     .nullable(),
   createdAt: z.string().optional().nullable(),

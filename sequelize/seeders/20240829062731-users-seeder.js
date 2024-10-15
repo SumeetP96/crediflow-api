@@ -24,7 +24,7 @@ const roles = {
 module.exports = {
   async up(queryInterface) {
     const users = [];
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 50; i++) {
       users.push({
         name: faker.person.fullName(),
         username: faker.internet.userName(),

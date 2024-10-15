@@ -9,7 +9,7 @@ import {
   UpdateOptions,
 } from 'sequelize';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
-import { CustomerStatus, TCustomerOption } from '../customers.types';
+import { ECustomerStatus, TCustomerOption } from '../customers.types';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { FindAllCustomersQuery } from '../dto/find-all-customers-query-dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
@@ -159,7 +159,7 @@ export class CustomersService {
     return await this.customerModel.findAll({
       attributes: ['id', 'name'],
       where: {
-        status: CustomerStatus.ACTIVE,
+        status: ECustomerStatus.ACTIVE,
       },
     });
   }

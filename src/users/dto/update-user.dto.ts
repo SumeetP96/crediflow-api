@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserRole, UserStatus } from '../user.types';
+import { EUserStatus, UserRole } from '../user.types';
 
 export const updateUserSchema = z
   .object({
@@ -10,7 +10,7 @@ export const updateUserSchema = z
     role: z
       .enum([UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE])
       .optional(),
-    status: z.enum([UserStatus.ACTIVE, UserStatus.IN_ACTIVE]).optional(),
+    status: z.enum([EUserStatus.ACTIVE, EUserStatus.IN_ACTIVE]).optional(),
   })
   .refine(
     (data) => {

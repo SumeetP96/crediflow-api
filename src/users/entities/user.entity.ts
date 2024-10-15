@@ -8,7 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
-import { UserRole, UserStatus } from '../user.types';
+import { EUserStatus, UserRole } from '../user.types';
 
 @Table({
   tableName: 'users',
@@ -29,9 +29,9 @@ export class User extends Model {
   )
   role: UserRole;
 
-  @Default(UserStatus.ACTIVE)
-  @Column(DataType.ENUM(UserStatus.ACTIVE, UserStatus.IN_ACTIVE))
-  status: UserStatus;
+  @Default(EUserStatus.ACTIVE)
+  @Column(DataType.ENUM(EUserStatus.ACTIVE, EUserStatus.IN_ACTIVE))
+  status: EUserStatus;
 
   // Relations
 
