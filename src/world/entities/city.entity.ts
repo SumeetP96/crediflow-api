@@ -6,11 +6,12 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Country } from 'src/countries/entities/country.entity';
-import { State } from 'src/states/entities/state.entity';
+import { Country } from 'src/world/entities/country.entity';
+import { State } from 'src/world/entities/state.entity';
 
 @Table({
   tableName: 'cities',
+  timestamps: false,
 })
 export class City extends Model {
   @AllowNull

@@ -1,9 +1,10 @@
 import { Column, HasMany, Model, Table } from 'sequelize-typescript';
-import { City } from 'src/cities/entities/city.entity';
-import { State } from 'src/states/entities/state.entity';
+import { City } from 'src/world/entities/city.entity';
+import { State } from 'src/world/entities/state.entity';
 
 @Table({
   tableName: 'countries',
+  timestamps: false,
 })
 export class Country extends Model {
   @Column

@@ -19,6 +19,7 @@ import { InvoicesModule } from './invoices/invoices.module';
 import { TransactionTypesModule } from './transaction-types/transaction-types.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { UsersModule } from './users/users.module';
+import { WorldModule } from './world/world.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { UsersModule } from './users/users.module';
     AgentsModule,
     TransactionTypesModule,
     TransactionsModule,
+    WorldModule,
   ],
   controllers: [AppController],
   providers: [

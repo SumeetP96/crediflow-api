@@ -10,13 +10,13 @@ module.exports = {
             CREATE TABLE IF NOT EXISTS countries (
               id SERIAL PRIMARY KEY,
               name VARCHAR(255) NOT NULL,
-              iso3 CHAR(10) NOT NULL,
-              iso2 CHAR(10) NOT NULL,
-              numeric_code CHAR(10) NOT NULL,
-              phone_code CHAR(10) NOT NULL,
-              currency CHAR(10) NOT NULL,
+              iso3 VARCHAR(10) NOT NULL,
+              iso2 VARCHAR(10) NOT NULL,
+              numeric_code VARCHAR(10) NOT NULL,
+              phone_code VARCHAR(10) NOT NULL,
+              currency VARCHAR(10) NOT NULL,
               currency_name VARCHAR(255) NOT NULL,
-              emoji CHAR(10) NOT NULL,
+              emoji VARCHAR(10) NOT NULL,
               emoji_unicode VARCHAR(255) NOT NULL
             );
           `,
@@ -29,7 +29,7 @@ module.exports = {
               id SERIAL PRIMARY KEY,
               country_id INTEGER NOT NULL,
               name VARCHAR(255) NOT NULL,
-              state_code CHAR(10)
+              state_code VARCHAR(10)
             );
           `,
           { transaction },
