@@ -27,6 +27,7 @@ export interface ICustomerAddress {
   addressType?: ECustomerAddressType;
   street1?: string;
   street2?: string;
+  area?: string;
   city?: string;
   state?: string;
   pinCode?: string;

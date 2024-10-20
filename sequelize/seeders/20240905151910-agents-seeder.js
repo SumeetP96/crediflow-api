@@ -13,13 +13,12 @@ const status = {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
-    if (!isDevEnv) {
-      return;
-    }
+    try {
+      if (!isDevEnv) {
+        return;
+      }
 
-    await queryInterface.bulkInsert(
-      'agents',
-      [
+      await queryInterface.bulkInsert('agents', [
         {
           name: 'Agent One',
           contact_numbers: ['9898989898', '8787878787'],
@@ -46,16 +45,23 @@ module.exports = {
           addresses: ['Jodhpur, Rajasthan'],
           status: status.active,
         },
-      ],
-      {},
-    );
+      ]);
+    } catch (error) {
+      console.error('Error seeding agents table:', error.message);
+      throw error;
+    }
   },
 
   async down(queryInterface) {
-    if (!isDevEnv) {
-      return;
-    }
+    try {
+      if (!isDevEnv) {
+        return;
+      }
 
-    await queryInterface.bulkDelete('agents', null, {});
+      await queryInterface.bulkDelete('agents', null);
+    } catch (error) {
+      console.error('Error reverting users seeder:', error.message);
+      throw error;
+    }
   },
 };

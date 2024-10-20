@@ -25,20 +25,21 @@ const contact = (primary = false) => {
 
 const address = (primary = false) => {
   return JSON.stringify({
-    isPrimary: primary ? 'true' : 'false',
+    isPrimary: primary,
     status: 'active',
     addressType: 'home',
     street1: faker.location.buildingNumber(),
     street2: faker.location.street(),
+    area: faker.location.county(),
     city: faker.location.city(),
     state: faker.location.state(),
     country: faker.location.country(),
-    postalCode: faker.string.numeric({
+    pinCode: faker.string.numeric({
       length: 6,
       min: 100000,
       max: 999999,
     }),
-  });
+  }).replaceAll('`', '');
 };
 
 /** @type {import('sequelize-cli').Migration} */
@@ -49,7 +50,7 @@ module.exports = {
         return;
       }
 
-      const data = [
+      await queryInterface.bulkInsert('customers', [
         {
           name: faker.person.fullName(),
           contact_numbers: Sequelize.literal(
@@ -104,21 +105,23 @@ module.exports = {
           opening_balance: 10000,
           status: status.active,
         },
-      ];
-
-      data.forEach((d) => console.log(d));
-
-      await queryInterface.bulkInsert('customers', data, {});
+      ]);
     } catch (error) {
-      console.log('🚀 ~ up ~ error:', error.message);
+      console.error('Error seeding customers table:', error.message);
+      throw error;
     }
   },
 
   async down(queryInterface) {
-    if (!isDevEnv) {
-      return;
-    }
+    try {
+      if (!isDevEnv) {
+        return;
+      }
 
-    await queryInterface.bulkDelete('customers', null, {});
+      await queryInterface.bulkDelete('customers', null, { transaction });
+    } catch (error) {
+      console.error('Error reverting customers seeder:', error.message);
+      throw error;
+    }
   },
 };

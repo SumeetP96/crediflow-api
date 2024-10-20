@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 'use strict';
 
-const { faker } = require('@faker-js/faker');
 const bcrypt = require('bcrypt');
 
 async function hash(plaintextPassword) {
@@ -23,22 +22,21 @@ const roles = {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
-    const users = [];
-    for (let i = 0; i < 50; i++) {
-      users.push({
-        name: faker.person.fullName(),
-        username: faker.internet.userName(),
-        password: await hash('password'),
-        role: roles.admin,
-        status: status.active,
-        created_at: new Date(),
-        updated_at: new Date(),
-      });
-    }
+    try {
+      const users = [];
+      // for (let i = 0; i < 50; i++) {
+      //   users.push({
+      //     name: faker.person.fullName(),
+      //     username: faker.internet.userName(),
+      //     password: await hash('password'),
+      //     role: roles.admin,
+      //     status: status.active,
+      //     created_at: new Date(),
+      //     updated_at: new Date(),
+      //   });
+      // }
 
-    await queryInterface.bulkInsert(
-      'users',
-      [
+      await queryInterface.bulkInsert('users', [
         {
           name: 'Super Admin',
           username: 'superadmin',
@@ -67,12 +65,19 @@ module.exports = {
           updated_at: new Date(),
         },
         ...users,
-      ],
-      {},
-    );
+      ]);
+    } catch (error) {
+      console.log('Error seeding users table:', error.message);
+      throw error;
+    }
   },
 
   async down(queryInterface) {
-    await queryInterface.bulkDelete('users', null, {});
+    try {
+      await queryInterface.bulkDelete('users', null);
+    } catch (error) {
+      console.log('Error reverting users seeder:', error.message);
+      throw error;
+    }
   },
 };

@@ -27,9 +27,9 @@
     "db:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
     "db:migrate:restore": "npm run db:migrate:undo:all && npm run db:migrate",
     "db:seed:generate": "sequelize-cli seed:generate --name ",
-    "db:seed:one": "sequelize-cli db:seed",
+    "db:seed:one": "sequelize-cli db:seed --seed",
     "db:seed:all": "sequelize-cli db:seed:all",
-    "db:seed:undo": "sequelize-cli db:seed:undo",
+    "db:seed:undo": "sequelize-cli db:seed:undo --seed",
     "db:seed:undo:all": "sequelize-cli db:seed:undo:all",
     "db:seed:restore": "npm run db:seed:undo:all && npm run db:seed:all",
     "db:restore": "npm run db:migrate:restore && npm run db:seed:all"
