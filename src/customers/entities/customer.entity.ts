@@ -11,7 +11,11 @@ import {
 } from 'sequelize-typescript';
 import { InvoiceRelation } from 'src/invoices/entities/invoice-relations.entity';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
-import { ECustomerStatus, ICustomerContactNumber } from '../customers.types';
+import {
+  ECustomerStatus,
+  ICustomerAddress,
+  ICustomerContactNumber,
+} from '../customers.types';
 
 @Table({
   tableName: 'customers',
@@ -32,7 +36,7 @@ export class Customer extends Model {
 
   @AllowNull
   @Column(DataType.ARRAY(DataType.JSONB))
-  addresses: ICustomerContactNumber[];
+  addresses: ICustomerAddress[];
 
   @Column
   isReseller: boolean;

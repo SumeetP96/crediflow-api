@@ -16,22 +16,10 @@ export enum ECustomerAddressStatus {
   INACTIVE = 'inactive',
 }
 
-export enum ECustomerAddressType {
-  HOME = 'home',
-  WORK = 'work',
-}
-
 export interface ICustomerAddress {
+  address?: string;
   status?: ECustomerAddressStatus;
   isPrimary?: boolean;
-  addressType?: ECustomerAddressType;
-  street1?: string;
-  street2?: string;
-  area?: string;
-  city?: string;
-  state?: string;
-  pinCode?: string;
-  country?: string;
 }
 
 export enum ECustomerStatus {

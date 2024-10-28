@@ -3,7 +3,6 @@
 
 require('dotenv').config();
 const { faker } = require('@faker-js/faker');
-const worldData = require('../data/world.json');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -33,31 +32,10 @@ module.exports = {
       };
 
       const address = (primary = false) => {
-        const India = worldData.find((country) => Number(country.id) === 101);
-        const state =
-          India.states[
-            faker.number.int({ min: 0, max: India.states.length - 1 })
-          ];
-        const city =
-          state.cities[
-            faker.number.int({ min: 0, max: state.cities.length - 1 })
-          ];
-
         return JSON.stringify({
+          address: `${faker.location.streetAddress()}, ${faker.location.country()}`,
           isPrimary: primary,
           status: 'active',
-          addressType: 'home',
-          street1: faker.location.buildingNumber(),
-          street2: faker.location.street(),
-          area: faker.location.county(),
-          city: city.id,
-          state: state.id,
-          country: India.id,
-          pinCode: faker.string.numeric({
-            length: 6,
-            min: 100000,
-            max: 999999,
-          }),
         }).replaceAll('`', '');
       };
 
