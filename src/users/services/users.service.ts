@@ -98,7 +98,7 @@ export class UsersService {
       offset,
       limit,
       ...(options || {}),
-      paranoid: query.isDeletedShown === 'yes',
+      paranoid: query.isDeletedShown !== 'yes',
     });
   }
 

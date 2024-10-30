@@ -100,7 +100,7 @@ export class CustomersService {
       offset,
       limit,
       ...(options || {}),
-      paranoid: query.isDeletedShown === 'yes',
+      paranoid: query.isDeletedShown !== 'yes',
     });
   }
 
