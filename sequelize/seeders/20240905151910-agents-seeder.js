@@ -1,48 +1,85 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 'use strict';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
-
-const isDevEnv = process.env.NODE_ENV !== 'production';
-
-const status = {
-  active: 'active',
-  in_active: 'in_active',
-};
+const { faker } = require('@faker-js/faker');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface) {
+  async up(queryInterface, Sequelize) {
     try {
+      const isDevEnv = process.env.NODE_ENV !== 'production';
+
       if (!isDevEnv) {
         return;
       }
 
+      const status = {
+        active: 'active',
+        in_active: 'in_active',
+      };
+
+      const contact = (primary = false) => {
+        return JSON.stringify({
+          number: faker.string.numeric({
+            length: 10,
+            min: 7111111111,
+            max: 9999999999,
+          }),
+          status: 'active',
+          isPrimary: primary,
+        });
+      };
+
+      const address = (primary = false) => {
+        return JSON.stringify({
+          address: `${faker.location.streetAddress()}, ${faker.location.country()}`,
+          isPrimary: primary,
+          status: 'active',
+        }).replaceAll('`', '');
+      };
+
       await queryInterface.bulkInsert('agents', [
         {
           name: 'Agent One',
-          contact_numbers: ['9898989898', '8787878787'],
-          addresses: ['Ahmedabad, Gujarat', 'Mumbai, Maharashtra'],
+          contact_numbers: Sequelize.literal(
+            `ARRAY['${contact(true)}'::jsonb, '${contact()}'::jsonb]::jsonb[]`,
+          ),
+          addresses: Sequelize.literal(
+            `ARRAY['${address(true)}'::jsonb, '${address()}'::jsonb]::jsonb[]`,
+          ),
           status: status.active,
         },
         {
           parent_id: 1,
           name: 'Agent Sub One',
-          contact_numbers: ['7676767676'],
-          addresses: ['Ahmedabad, Gujarat'],
+          contact_numbers: Sequelize.literal(
+            `ARRAY['${contact(true)}'::jsonb]::jsonb[]`,
+          ),
+          addresses: Sequelize.literal(
+            `ARRAY['${address(true)}'::jsonb, '${address()}'::jsonb]::jsonb[]`,
+          ),
           status: status.active,
         },
         {
           name: 'Agent Two',
-          contact_numbers: ['6565656565', '5454545454'],
-          addresses: ['Jodhpur, Rajasthan', 'Chennai, Tamil Nadu'],
+          contact_numbers: Sequelize.literal(
+            `ARRAY['${contact(true)}'::jsonb, '${contact()}'::jsonb]::jsonb[]`,
+          ),
+          addresses: Sequelize.literal(
+            `ARRAY['${address(true)}'::jsonb, '${address()}'::jsonb]::jsonb[]`,
+          ),
           status: status.active,
         },
         {
           parent_id: 3,
           name: 'Agent Sub Two',
-          contact_numbers: ['4343434343'],
-          addresses: ['Jodhpur, Rajasthan'],
+          contact_numbers: Sequelize.literal(
+            `ARRAY['${contact(true)}'::jsonb, '${contact()}'::jsonb]::jsonb[]`,
+          ),
+          addresses: Sequelize.literal(
+            `ARRAY['${address(true)}'::jsonb, '${address()}'::jsonb]::jsonb[]`,
+          ),
           status: status.active,
         },
       ]);
