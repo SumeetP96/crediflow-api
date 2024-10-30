@@ -2,7 +2,7 @@ import { Customer } from './entities/customer.entity';
 
 export enum ECustomerContactNumberStatus {
   ACTIVE = 'active',
-  INACTIVE = 'inactive',
+  IN_ACTIVE = 'inactive',
 }
 
 export interface ICustomerContactNumber {
@@ -13,7 +13,7 @@ export interface ICustomerContactNumber {
 
 export enum ECustomerAddressStatus {
   ACTIVE = 'active',
-  INACTIVE = 'inactive',
+  IN_ACTIVE = 'inactive',
 }
 
 export interface ICustomerAddress {
