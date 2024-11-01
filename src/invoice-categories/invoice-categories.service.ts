@@ -111,7 +111,7 @@ export class InvoiceCategoriesService {
       where: { invoiceCategoryId: id },
     });
 
-    if (!invoicesWithCategory) {
+    if (invoicesWithCategory) {
       throw new Error('Cannot delete Invoice Category because it has Invoices');
     }
 

@@ -8,7 +8,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
-import { TransactionTypeStatus } from '../transaction-types.interfaces';
+import { ETransactionTypeStatus } from '../transaction-types.interfaces';
 
 @Table({
   tableName: 'transaction_types',
@@ -24,14 +24,14 @@ export class TransactionType extends Model {
   @Column
   isDeduction: boolean;
 
-  @Default(TransactionTypeStatus.ACTIVE)
+  @Default(ETransactionTypeStatus.ACTIVE)
   @Column(
     DataType.ENUM(
-      TransactionTypeStatus.ACTIVE,
-      TransactionTypeStatus.IN_ACTIVE,
+      ETransactionTypeStatus.ACTIVE,
+      ETransactionTypeStatus.IN_ACTIVE,
     ),
   )
-  status: TransactionTypeStatus;
+  status: ETransactionTypeStatus;
 
   // Relations
 

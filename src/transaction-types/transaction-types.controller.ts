@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseFilters,
   UsePipes,
 } from '@nestjs/common';
@@ -16,6 +17,10 @@ import {
   CreateTransactionTypeDto,
   createTransactionTypeSchema,
 } from './dto/create-transaction-type.dto';
+import {
+  FindAllTransactionTypesQuery,
+  findAllTransactionTypesSchema,
+} from './dto/find-all-transaction-types.dto';
 import {
   UpdateTransactionTypeDto,
   updateTransactionTypeSchema,
@@ -39,9 +44,10 @@ export class TransactionTypesController {
   }
 
   @Get()
-  async findAll() {
+  @UsePipes(new ZodValidationPipe({ query: findAllTransactionTypesSchema }))
+  async findAllWithCount(@Query() query: FindAllTransactionTypesQuery) {
     return this.utilsProvider.responseBuilder.success(
-      await this.transactionTypesService.findAll(),
+      await this.transactionTypesService.findAllWithCount(query),
     );
   }
 
@@ -67,13 +73,6 @@ export class TransactionTypesController {
   async remove(@Param('id') id: number) {
     return this.utilsProvider.responseBuilder.success(
       await this.transactionTypesService.remove(id),
-    );
-  }
-
-  @Post('restore/:id')
-  async restore(@Param('id') id: number) {
-    return this.utilsProvider.responseBuilder.success(
-      await this.transactionTypesService.restore(id),
     );
   }
 }
