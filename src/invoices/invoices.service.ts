@@ -8,13 +8,17 @@ import {
   UpdateOptions,
 } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
+import { UtilsProvider } from 'src/common/utils/utils.provider';
+import { Customer } from 'src/customers/entities/customer.entity';
 import { InvoiceCategory } from 'src/invoice-categories/entities/invoice-category.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { User } from 'src/users/entities/user.entity';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
+import { FindAllInvoicesSchema } from './dto/find-all-invoices.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { InvoiceRelation } from './entities/invoice-relations.entity';
 import { Invoice } from './entities/invoice.entity';
-import { InvoiceStatus } from './invoices.interfaces';
+import { EInvoiceStatus } from './invoices.types';
 
 @Injectable()
 export class InvoicesService {
@@ -28,6 +32,7 @@ export class InvoicesService {
     @InjectModel(Transaction)
     private transactionModel: typeof Transaction,
     private sequelize: Sequelize,
+    private readonly utilsProvider: UtilsProvider,
   ) {}
 
   private generateInvoiceRelations(
@@ -65,7 +70,7 @@ export class InvoicesService {
           ...invoiceDtoData,
           userId,
           balance: invoiceDtoData.amount,
-          status: InvoiceStatus.UNPAID,
+          status: EInvoiceStatus.UNPAID,
         },
         options,
       );
@@ -103,8 +108,71 @@ export class InvoicesService {
     });
   }
 
-  async findAll(options?: FindOptions): Promise<Invoice[]> {
-    return await this.invoiceModel.findAll(options);
+  async findAllWithCount(
+    query: FindAllInvoicesSchema,
+    options?: FindOptions,
+  ): Promise<{ count: number; rows: Invoice[] }> {
+    const filterClauses =
+      this.utilsProvider.queryBuilder.whereClausesFromFilters<Invoice>(
+        'Invoice',
+        query,
+        [
+          { field: 'id', matchType: 'exact' },
+          { field: 'status', matchType: 'exact' },
+          { field: 'createdAt', matchType: 'date' },
+          { field: 'updatedAt', matchType: 'date' },
+        ],
+      );
+
+    const searchClauses =
+      this.utilsProvider.queryBuilder.whereClausesFromSearch<Invoice>(
+        'Invoice',
+        query.search,
+        [
+          {
+            field: 'name' as keyof Invoice,
+            queryKey: 'customerName',
+            matchType: 'fuzzy',
+            alias: 'customer',
+          },
+          { field: 'amount', matchType: 'fuzzy-from-number' },
+        ],
+      );
+
+    const where = this.utilsProvider.queryBuilder.joinWhereClauses('and', [
+      filterClauses,
+      searchClauses,
+    ]);
+
+    const order = this.utilsProvider.queryBuilder.orderByField<Invoice>(
+      ['createdAt', 'desc'],
+      [query.sortBy as keyof Invoice, query.sortOrder],
+    );
+
+    const [offset, limit] = this.utilsProvider.queryBuilder.pagination(
+      query.page,
+      query.perPage,
+    );
+
+    return await this.invoiceModel.findAndCountAll({
+      include: [
+        {
+          model: Customer,
+          attributes: ['id', 'name'],
+          as: 'customer',
+        },
+        {
+          model: User,
+          attributes: ['id', 'name'],
+          as: 'user',
+        },
+      ],
+      where,
+      order,
+      offset,
+      limit,
+      ...(options || {}),
+    });
   }
 
   async findById(id: number, options?: FindOptions): Promise<Invoice> {
@@ -125,7 +193,7 @@ export class InvoicesService {
         {
           ...invoiceDtoData,
           balance: updateInvoiceDto.amount,
-          status: InvoiceStatus.UNPAID,
+          status: EInvoiceStatus.UNPAID,
         },
         {
           where: { id },

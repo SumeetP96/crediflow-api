@@ -6,6 +6,7 @@ export type TQueryBuilderWhereFieldMatchType =
   | 'exact'
   | 'fuzzy'
   | 'fuzzy-from-array'
+  | 'fuzzy-from-number'
   | 'multiple'
   | 'date'
   | 'daterange'
@@ -32,7 +33,7 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
 
     let fieldName = `$${alias}.${snakeCase(field as string)}$`;
 
-    if (matchType === 'fuzzy-from-array') {
+    if (matchType === 'fuzzy-from-array' || matchType === 'fuzzy-from-number') {
       fieldName = `${alias}.${snakeCase(field as string)}`;
     }
 
@@ -63,6 +64,16 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
           );
         }
         break;
+
+      case 'fuzzy-from-number':
+        if (fieldValue !== undefined) {
+          whereConditions.push(
+            sequelize.where(
+              sequelize.cast(sequelize.col(fieldName), 'text'), // Cast numeric to text
+              { [Op.iLike]: `%${String(fieldValue)}%` },
+            ),
+          );
+        }
 
       case 'multiple':
         if (Array.isArray(fieldValue)) {
@@ -124,9 +135,9 @@ export const whereClausesFromSearch = <T>(
   searchFields.forEach(({ field, matchType, alias: tableAlias }) => {
     const alias = tableAlias ?? defaultAlias;
 
-    let fieldName = `$${alias}.${field as string}$`;
+    let fieldName = `$${alias}.${snakeCase(field as string)}$`;
 
-    if (matchType === 'fuzzy-from-array') {
+    if (matchType === 'fuzzy-from-array' || matchType === 'fuzzy-from-number') {
       fieldName = `${alias}.${snakeCase(field as string)}`;
     }
 
@@ -141,6 +152,15 @@ export const whereClausesFromSearch = <T>(
         whereConditions.push(
           sequelize.where(
             sequelize.fn('array_to_string', sequelize.col(fieldName), ','),
+            { [Op.iLike]: `%${String(searchTerm)}%` },
+          ),
+        );
+        break;
+
+      case 'fuzzy-from-number':
+        whereConditions.push(
+          sequelize.where(
+            sequelize.cast(sequelize.col(fieldName), 'text'), // Cast numeric to text
             { [Op.iLike]: `%${String(searchTerm)}%` },
           ),
         );

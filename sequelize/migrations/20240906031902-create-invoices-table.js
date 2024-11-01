@@ -8,7 +8,7 @@ module.exports = {
         await queryInterface.sequelize.query(
           `
             DROP TYPE IF EXISTS enum_invoice_status CASCADE;
-            CREATE TYPE enum_invoice_status AS ENUM ('paid', 'unpaid', 'on_hold', 'cancelled');
+            CREATE TYPE enum_invoice_status AS ENUM ('paid', 'partial_paid', 'unpaid', 'on_hold', 'cancelled');
           `,
           { transaction },
         );

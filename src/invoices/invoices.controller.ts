@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseFilters,
   UsePipes,
@@ -17,6 +18,10 @@ import {
   CreateInvoiceDto,
   createInvoiceSchema,
 } from './dto/create-invoice.dto';
+import {
+  FindAllInvoicesSchema,
+  findAllInvoicesSchema,
+} from './dto/find-all-invoices.dto';
 import {
   UpdateInvoiceDto,
   updateInvoiceSchema,
@@ -42,9 +47,10 @@ export class InvoicesController {
   }
 
   @Get()
-  async findAll() {
+  @UsePipes(new ZodValidationPipe({ query: findAllInvoicesSchema }))
+  async findAllWithCount(@Query() query: FindAllInvoicesSchema) {
     return this.utilsProvider.responseBuilder.success(
-      await this.invoicesService.findAll(),
+      await this.invoicesService.findAllWithCount(query),
     );
   }
 

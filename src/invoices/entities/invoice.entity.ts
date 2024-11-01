@@ -13,7 +13,7 @@ import { Customer } from 'src/customers/entities/customer.entity';
 import { InvoiceCategory } from 'src/invoice-categories/entities/invoice-category.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
 import { User } from 'src/users/entities/user.entity';
-import { InvoiceStatus } from '../invoices.interfaces';
+import { EInvoiceStatus } from '../invoices.types';
 import { InvoiceRelation } from './invoice-relations.entity';
 
 @Table({
@@ -50,16 +50,16 @@ export class Invoice extends Model {
   @Column
   dueDate: Date;
 
-  @Default(InvoiceStatus.UNPAID)
+  @Default(EInvoiceStatus.UNPAID)
   @Column(
     DataType.ENUM(
-      InvoiceStatus.PAID,
-      InvoiceStatus.UNPAID,
-      InvoiceStatus.ON_HOLD,
-      InvoiceStatus.CANCELLED,
+      EInvoiceStatus.PAID,
+      EInvoiceStatus.UNPAID,
+      EInvoiceStatus.ON_HOLD,
+      EInvoiceStatus.CANCELLED,
     ),
   )
-  status: InvoiceStatus;
+  status: EInvoiceStatus;
 
   // Reations
   @BelongsTo(() => InvoiceCategory, 'invoiceCategoryId')

@@ -9,7 +9,7 @@ import {
 } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
-import { InvoiceStatus } from 'src/invoices/invoices.interfaces';
+import { EInvoiceStatus } from 'src/invoices/invoices.types';
 import { TransactionType } from 'src/transaction-types/entities/transaction-type.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -39,9 +39,9 @@ export class TransactionsService {
     const isFullyPaid = balance === 0;
 
     const status = isFullyPaid
-      ? InvoiceStatus.PAID
-      : invoice.status === InvoiceStatus.PAID
-        ? InvoiceStatus.UNPAID
+      ? EInvoiceStatus.PAID
+      : invoice.status === EInvoiceStatus.PAID
+        ? EInvoiceStatus.UNPAID
         : invoice.status;
 
     await this.invoiceModel.update(
