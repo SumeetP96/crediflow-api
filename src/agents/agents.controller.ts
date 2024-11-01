@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseFilters,
   UsePipes,
 } from '@nestjs/common';
@@ -14,6 +15,10 @@ import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
 import { AgentsService } from './agents.service';
 import { CreateAgentDto, createAgentSchema } from './dto/create-agent.dto';
+import {
+  FindAllAgentsQuery,
+  findAllAgentsSchema,
+} from './dto/find-all-agents-query-dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
 
 @UseFilters(AllExceptionsFilter)
@@ -34,9 +39,10 @@ export class AgentsController {
   }
 
   @Get()
-  async findAll() {
+  @UsePipes(new ZodValidationPipe({ query: findAllAgentsSchema }))
+  async findAll(@Query() query: FindAllAgentsQuery) {
     return this.utilsProvider.responseBuilder.success(
-      await this.agentsService.findAll(),
+      await this.agentsService.findAllWithCount(query),
     );
   }
 

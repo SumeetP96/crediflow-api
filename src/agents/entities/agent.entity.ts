@@ -10,7 +10,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { InvoiceRelation } from 'src/invoices/entities/invoice-relations.entity';
-import { AgentsStatus } from '../agents.interfaces';
+import { EAgentStatus } from '../agents.types';
 
 @Table({
   tableName: 'agents',
@@ -33,9 +33,9 @@ export class Agent extends Model {
   @Column(DataType.ARRAY(DataType.TEXT))
   addresses: string[];
 
-  @Default(AgentsStatus.ACTIVE)
-  @Column(DataType.ENUM(AgentsStatus.ACTIVE, AgentsStatus.IN_ACTIVE))
-  status: AgentsStatus;
+  @Default(EAgentStatus.ACTIVE)
+  @Column(DataType.ENUM(EAgentStatus.ACTIVE, EAgentStatus.IN_ACTIVE))
+  status: EAgentStatus;
 
   // Relations
 

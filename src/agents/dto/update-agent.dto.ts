@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { AgentsStatus } from '../agents.interfaces';
+import { EAgentStatus } from '../agents.types';
 
 export const updateAgentSchema = z.object({
   name: z.string().optional().nullable(),
   contactNumbers: z.array(z.string()).optional().nullable(),
   addresses: z.array(z.string()).optional().nullable(),
   status: z
-    .enum([AgentsStatus.ACTIVE, AgentsStatus.IN_ACTIVE])
+    .enum([EAgentStatus.ACTIVE, EAgentStatus.IN_ACTIVE])
     .optional()
     .nullable(),
   parentId: z.number().optional().nullable(),
