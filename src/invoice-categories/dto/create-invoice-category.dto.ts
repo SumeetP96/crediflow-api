@@ -1,15 +1,15 @@
 import { z } from 'zod';
-import { InvoiceCategoriesStatus } from '../invoice-categories.interfaces';
+import { EInvoiceCategoryStatus } from '../invoice-categories.types';
 
 export const createInvoiceCategorySchema = z
   .object({
     name: z.string(),
-    prefix: z.string().optional().nullable(),
-    suffix: z.string().optional().nullable(),
+    prefix: z.string().max(10).optional().nullable(),
+    suffix: z.string().max(10).optional().nullable(),
     description: z.string().optional().nullable(),
     status: z.enum([
-      InvoiceCategoriesStatus.ACTIVE,
-      InvoiceCategoriesStatus.IN_ACTIVE,
+      EInvoiceCategoryStatus.ACTIVE,
+      EInvoiceCategoryStatus.IN_ACTIVE,
     ]),
   })
   .required();

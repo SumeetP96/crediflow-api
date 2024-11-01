@@ -8,7 +8,8 @@ export type TQueryBuilderWhereFieldMatchType =
   | 'fuzzy-from-array'
   | 'multiple'
   | 'date'
-  | 'daterange';
+  | 'daterange'
+  | 'yes-no-boolean';
 
 export interface IQueryBuilderWhereField<T> {
   queryKey?: string;
@@ -29,7 +30,7 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
 
     const alias = tableAlias ?? defaultAlias;
 
-    let fieldName = `$${alias}.${field as string}$`;
+    let fieldName = `$${alias}.${snakeCase(field as string)}$`;
 
     if (matchType === 'fuzzy-from-array') {
       fieldName = `${alias}.${snakeCase(field as string)}`;
@@ -92,6 +93,14 @@ export const whereClausesFromFilters = <T = any, Q = Record<string, any>>(
               [Op.gte]: dayjs(fieldValue[0]).format('YYYY-MM-DD'),
               [Op.lt]: dayjs(fieldValue[1]).add(1, 'days').format('YYYY-MM-DD'),
             },
+          });
+        }
+        break;
+
+      case 'yes-no-boolean':
+        if (fieldValue !== undefined) {
+          whereConditions.push({
+            [fieldName]: { [Op.eq]: fieldValue.toLowerCase() === 'yes' },
           });
         }
         break;

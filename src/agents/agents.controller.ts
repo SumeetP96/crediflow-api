@@ -41,7 +41,7 @@ export class AgentsController {
 
   @Get()
   @UsePipes(new ZodValidationPipe({ query: findAllAgentsSchema }))
-  async findAll(@Query() query: FindAllAgentsQuery) {
+  async findAllWithCount(@Query() query: FindAllAgentsQuery) {
     return this.utilsProvider.responseBuilder.success(
       await this.agentsService.findAllWithCount(query),
     );

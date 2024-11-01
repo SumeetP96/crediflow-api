@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseFilters,
   UsePipes,
 } from '@nestjs/common';
@@ -16,6 +17,10 @@ import {
   CreateInvoiceCategoryDto,
   createInvoiceCategorySchema,
 } from './dto/create-invoice-category.dto';
+import {
+  FindAllInvoiceCategoriesQuery,
+  findAllInvoiceCategoriesSchema,
+} from './dto/find-all-invoice-categories-query.dto';
 import {
   UpdateInvoiceCategoryDto,
   updateInvoiceCategorySchema,
@@ -39,9 +44,10 @@ export class InvoiceCategoriesController {
   }
 
   @Get()
-  async findAll() {
+  @UsePipes(new ZodValidationPipe({ query: findAllInvoiceCategoriesSchema }))
+  async findAllWithCount(@Query() query: FindAllInvoiceCategoriesQuery) {
     return this.utilsProvider.responseBuilder.success(
-      await this.invoiceCategoriesService.findAll(),
+      await this.invoiceCategoriesService.findAllWithCount(query),
     );
   }
 
@@ -67,13 +73,6 @@ export class InvoiceCategoriesController {
   async remove(@Param('id') id: number) {
     return this.utilsProvider.responseBuilder.success(
       await this.invoiceCategoriesService.remove(id),
-    );
-  }
-
-  @Post('restore/:id')
-  async restore(@Param('id') id: number) {
-    return this.utilsProvider.responseBuilder.success(
-      await this.invoiceCategoriesService.restore(id),
     );
   }
 }

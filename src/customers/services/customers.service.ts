@@ -13,7 +13,7 @@ import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { ECustomerStatus, TCustomerOption } from '../customers.types';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
 import { CustomerOptionsQuery } from '../dto/customer-options.dto';
-import { FindAllCustomersQuery } from '../dto/find-all-customers-query-dto';
+import { FindAllCustomersQuery } from '../dto/find-all-customers-query.dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { Customer } from '../entities/customer.entity';
 

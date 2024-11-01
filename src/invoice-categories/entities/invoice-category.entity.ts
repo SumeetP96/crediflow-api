@@ -8,7 +8,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Invoice } from 'src/invoices/entities/invoice.entity';
-import { InvoiceCategoriesStatus } from '../invoice-categories.interfaces';
+import { EInvoiceCategoryStatus } from '../invoice-categories.types';
 
 @Table({
   tableName: 'invoice_categories',
@@ -37,14 +37,14 @@ export class InvoiceCategory extends Model {
   @Column
   nextNumber: number;
 
-  @Default(InvoiceCategoriesStatus.ACTIVE)
+  @Default(EInvoiceCategoryStatus.ACTIVE)
   @Column(
     DataType.ENUM(
-      InvoiceCategoriesStatus.ACTIVE,
-      InvoiceCategoriesStatus.IN_ACTIVE,
+      EInvoiceCategoryStatus.ACTIVE,
+      EInvoiceCategoryStatus.IN_ACTIVE,
     ),
   )
-  status: InvoiceCategoriesStatus;
+  status: EInvoiceCategoryStatus;
 
   // Relations
 

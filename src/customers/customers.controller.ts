@@ -24,7 +24,7 @@ import {
 import {
   FindAllCustomersQuery,
   findAllCustomersSchema,
-} from './dto/find-all-customers-query-dto';
+} from './dto/find-all-customers-query.dto';
 import {
   UpdateCustomerDto,
   updateCustomerSchema,

@@ -10,12 +10,15 @@ import { InvoicesService } from './invoices.service';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Invoice]),
-    SequelizeModule.forFeature([InvoiceRelation]),
-    SequelizeModule.forFeature([InvoiceCategory]),
-    SequelizeModule.forFeature([Transaction]),
+    SequelizeModule.forFeature([
+      Invoice,
+      InvoiceRelation,
+      InvoiceCategory,
+      Transaction,
+    ]),
   ],
   controllers: [InvoicesController],
   providers: [InvoicesService, UtilsProvider],
+  exports: [InvoicesService],
 })
 export class InvoicesModule {}
