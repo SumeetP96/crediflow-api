@@ -5,12 +5,14 @@ import {
   DestroyOptions,
   FindAndCountOptions,
   FindOptions,
+  Op,
   RestoreOptions,
   UpdateOptions,
 } from 'sequelize';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { ECustomerStatus, TCustomerOption } from '../customers.types';
 import { CreateCustomerDto } from '../dto/create-customer.dto';
+import { CustomerOptionsQuery } from '../dto/customer-options.dto';
 import { FindAllCustomersQuery } from '../dto/find-all-customers-query-dto';
 import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { Customer } from '../entities/customer.entity';
@@ -155,11 +157,12 @@ export class CustomersService {
     return await this.findById(id);
   }
 
-  async options(): Promise<TCustomerOption[]> {
+  async options(query: CustomerOptionsQuery): Promise<TCustomerOption[]> {
     return await this.customerModel.findAll({
       attributes: ['id', 'name'],
       where: {
         status: ECustomerStatus.ACTIVE,
+        ...(query.id ? { id: { [Op.ne]: query.id } } : {}),
       },
     });
   }

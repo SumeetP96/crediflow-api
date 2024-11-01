@@ -18,6 +18,10 @@ import {
   createCustomerSchema,
 } from './dto/create-customer.dto';
 import {
+  CustomerOptionsQuery,
+  customerOptionsSchema,
+} from './dto/customer-options.dto';
+import {
   FindAllCustomersQuery,
   findAllCustomersSchema,
 } from './dto/find-all-customers-query-dto';
@@ -54,10 +58,10 @@ export class CustomersController {
   }
 
   @Get('/options')
-  async options() {
-    console.log('here');
+  @UsePipes(new ZodValidationPipe({ body: customerOptionsSchema }))
+  async options(@Query() query: CustomerOptionsQuery) {
     return this.utilsProvider.responseBuilder.success(
-      await this.customersService.options(),
+      await this.customersService.options(query),
     );
   }
 

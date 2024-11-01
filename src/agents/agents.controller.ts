@@ -14,6 +14,7 @@ import { AllExceptionsFilter } from 'src/common/exception-filters/all-exception.
 import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { ZodValidationPipe } from 'src/common/validation-pipes/zod-validation.pipe';
 import { AgentsService } from './agents.service';
+import { AgentOptionsQuery, agentOptionsSchema } from './dto/agent-options.dto';
 import { CreateAgentDto, createAgentSchema } from './dto/create-agent.dto';
 import {
   FindAllAgentsQuery,
@@ -43,6 +44,14 @@ export class AgentsController {
   async findAll(@Query() query: FindAllAgentsQuery) {
     return this.utilsProvider.responseBuilder.success(
       await this.agentsService.findAllWithCount(query),
+    );
+  }
+
+  @Get('/options')
+  @UsePipes(new ZodValidationPipe({ query: agentOptionsSchema }))
+  async options(@Query() query: AgentOptionsQuery) {
+    return this.utilsProvider.responseBuilder.success(
+      await this.agentsService.options(query),
     );
   }
 

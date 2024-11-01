@@ -4,11 +4,14 @@ import {
   CreateOptions,
   DestroyOptions,
   FindOptions,
+  Op,
   RestoreOptions,
   UpdateOptions,
 } from 'sequelize';
 import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { Customer } from 'src/customers/entities/customer.entity';
+import { EAgentStatus, TAgentOption } from './agents.types';
+import { AgentOptionsQuery } from './dto/agent-options.dto';
 import { CreateAgentDto } from './dto/create-agent.dto';
 import { FindAllAgentsQuery } from './dto/find-all-agents-query-dto';
 import { UpdateAgentDto } from './dto/update-agent.dto';
@@ -26,6 +29,7 @@ export class AgentsService {
     createAgentDto: CreateAgentDto,
     options?: CreateOptions,
   ): Promise<Agent> {
+    console.log('🚀 ~ AgentsService ~ createAgentDto:', createAgentDto);
     return await this.agentModel.create(createAgentDto, options);
   }
 
@@ -128,5 +132,15 @@ export class AgentsService {
       ...(options || {}),
     });
     return this.findById(id);
+  }
+
+  async options(query: AgentOptionsQuery): Promise<TAgentOption[]> {
+    return await this.agentModel.findAll({
+      attributes: ['id', 'name'],
+      where: {
+        status: EAgentStatus.ACTIVE,
+        ...(query.id ? { id: { [Op.ne]: query.id } } : {}),
+      },
+    });
   }
 }
