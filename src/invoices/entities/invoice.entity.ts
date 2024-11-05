@@ -61,6 +61,10 @@ export class Invoice extends Model {
   )
   status: EInvoiceStatus;
 
+  @AllowNull
+  @Column(DataType.TEXT)
+  remarks: string;
+
   // Reations
   @BelongsTo(() => InvoiceCategory, 'invoiceCategoryId')
   invoiceCategory: InvoiceCategory;

@@ -53,6 +53,10 @@ export class Customer extends Model {
   @Column(DataType.ENUM(ECustomerStatus.ACTIVE, ECustomerStatus.IN_ACTIVE))
   status: ECustomerStatus;
 
+  @AllowNull
+  @Column(DataType.TEXT)
+  remarks: string;
+
   // Relations
 
   @BelongsTo(() => Customer, 'parentId')

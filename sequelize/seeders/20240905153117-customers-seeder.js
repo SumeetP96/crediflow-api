@@ -52,6 +52,7 @@ module.exports = {
           balance: 10000,
           opening_balance: 2000,
           status: status.active,
+          remarks: 'Customer One',
         },
         {
           parent_id: 1,
@@ -66,6 +67,7 @@ module.exports = {
           balance: 5000,
           opening_balance: 5000,
           status: status.active,
+          remarks: 'Customer Sub One',
         },
         {
           name: 'Customer Two (Reseller)',
@@ -79,6 +81,7 @@ module.exports = {
           balance: 20000,
           opening_balance: 4000,
           status: status.active,
+          remarks: 'Customer Two',
         },
         {
           parent_id: 3,
@@ -93,6 +96,7 @@ module.exports = {
           balance: 15000,
           opening_balance: 10000,
           status: status.active,
+          remarks: 'Customer Sub Two',
         },
       ]);
     } catch (error) {

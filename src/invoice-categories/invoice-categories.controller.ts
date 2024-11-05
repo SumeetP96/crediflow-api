@@ -51,6 +51,13 @@ export class InvoiceCategoriesController {
     );
   }
 
+  @Get('options')
+  async options() {
+    return this.utilsProvider.responseBuilder.success(
+      await this.invoiceCategoriesService.options(),
+    );
+  }
+
   @Get(':id')
   async findById(@Param('id') id: number) {
     return this.utilsProvider.responseBuilder.success(

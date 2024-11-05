@@ -49,6 +49,7 @@ module.exports = {
             `ARRAY['${address(true)}'::jsonb, '${address()}'::jsonb]::jsonb[]`,
           ),
           status: status.active,
+          remarks: 'Agent One',
         },
         {
           parent_id: 1,
@@ -60,6 +61,7 @@ module.exports = {
             `ARRAY['${address(true)}'::jsonb, '${address()}'::jsonb]::jsonb[]`,
           ),
           status: status.active,
+          remarks: 'Agent Sub One',
         },
         {
           name: 'Agent Two',
@@ -70,6 +72,7 @@ module.exports = {
             `ARRAY['${address(true)}'::jsonb, '${address()}'::jsonb]::jsonb[]`,
           ),
           status: status.active,
+          remarks: 'Agent Two',
         },
         {
           parent_id: 3,
@@ -81,6 +84,7 @@ module.exports = {
             `ARRAY['${address(true)}'::jsonb, '${address()}'::jsonb]::jsonb[]`,
           ),
           status: status.active,
+          remarks: 'Agent Sub Two',
         },
       ]);
     } catch (error) {

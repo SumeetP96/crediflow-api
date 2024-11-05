@@ -12,6 +12,7 @@ import { CreateInvoiceCategoryDto } from './dto/create-invoice-category.dto';
 import { FindAllInvoiceCategoriesQuery } from './dto/find-all-invoice-categories-query.dto';
 import { UpdateInvoiceCategoryDto } from './dto/update-invoice-category.dto';
 import { InvoiceCategory } from './entities/invoice-category.entity';
+import { EInvoiceCategoryStatus } from './invoice-categories.types';
 
 @Injectable()
 export class InvoiceCategoriesService {
@@ -123,5 +124,18 @@ export class InvoiceCategoriesService {
     });
 
     return invoiceCategory;
+  }
+
+  async options(options?: FindOptions): Promise<InvoiceCategory[]> {
+    return await this.invoiceCategoryModel.findAll({
+      where: {
+        status: EInvoiceCategoryStatus.ACTIVE,
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'deletedAt', 'status'],
+      },
+      order: [['name', 'asc']],
+      ...(options || {}),
+    });
   }
 }

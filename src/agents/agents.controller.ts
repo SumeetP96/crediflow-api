@@ -47,7 +47,7 @@ export class AgentsController {
     );
   }
 
-  @Get('/options')
+  @Get('options')
   @UsePipes(new ZodValidationPipe({ query: agentOptionsSchema }))
   async options(@Query() query: AgentOptionsQuery) {
     return this.utilsProvider.responseBuilder.success(

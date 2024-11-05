@@ -37,6 +37,10 @@ export class Agent extends Model {
   @Column(DataType.ENUM(EAgentStatus.ACTIVE, EAgentStatus.IN_ACTIVE))
   status: EAgentStatus;
 
+  @AllowNull
+  @Column(DataType.TEXT)
+  remarks: string;
+
   // Relations
 
   @BelongsTo(() => Agent, 'parentId')

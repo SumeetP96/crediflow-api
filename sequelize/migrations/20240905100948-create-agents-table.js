@@ -22,6 +22,7 @@ module.exports = {
               contact_numbers JSONB[],
               addresses JSONB[],
               status enum_agent_status NOT NULL DEFAULT 'active',
+              remarks TEXT,
               created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
               updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
               deleted_at TIMESTAMP

@@ -57,8 +57,8 @@ export class CustomersController {
     );
   }
 
-  @Get('/options')
-  @UsePipes(new ZodValidationPipe({ body: customerOptionsSchema }))
+  @Get('options')
+  @UsePipes(new ZodValidationPipe({ query: customerOptionsSchema }))
   async options(@Query() query: CustomerOptionsQuery) {
     return this.utilsProvider.responseBuilder.success(
       await this.customersService.options(query),

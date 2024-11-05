@@ -26,6 +26,7 @@ module.exports = {
               balance DOUBLE PRECISION NOT NULL DEFAULT 0,
               due_date TIMESTAMP,
               status enum_invoice_status NOT NULL DEFAULT 'unpaid',
+              remarks TEXT,
               created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
               updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
             );
