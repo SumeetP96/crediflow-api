@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as bcryptHelpers from './helpers/bcrypt.helper';
 import * as cookieHelpers from './helpers/cookie.helper';
+import * as dateHelpers from './helpers/date.helper';
 import * as queryBuilderHelpers from './helpers/query-builder.helper';
 import * as responseBuilderHelpers from './helpers/response-builder.helper';
 import * as zodHelpers from './helpers/zod.helper';
@@ -12,4 +13,5 @@ export class UtilsProvider {
   cookies = cookieHelpers;
   queryBuilder = queryBuilderHelpers;
   zod = zodHelpers;
+  date = dateHelpers;
 }

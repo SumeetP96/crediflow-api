@@ -13,7 +13,7 @@ import { Customer } from 'src/customers/entities/customer.entity';
 import { InvoiceCategory } from 'src/invoice-categories/entities/invoice-category.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
 import { User } from 'src/users/entities/user.entity';
-import { EInvoiceStatus } from '../invoices.types';
+import { EInvoiceStatus, IInvoiceItem } from '../invoices.types';
 import { InvoiceRelation } from './invoice-relations.entity';
 
 @Table({
@@ -37,6 +37,10 @@ export class Invoice extends Model {
 
   @Column
   invoiceNumber: string;
+
+  @AllowNull
+  @Column(DataType.ARRAY(DataType.JSONB))
+  invoiceItems: IInvoiceItem[];
 
   @Default(0)
   @Column(DataType.FLOAT)

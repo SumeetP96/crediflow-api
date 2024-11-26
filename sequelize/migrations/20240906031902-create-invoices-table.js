@@ -22,6 +22,7 @@ module.exports = {
               user_id INTEGER NOT NULL,
               date TIMESTAMP NOT NULL,
               invoice_number VARCHAR(50) NOT NULL,
+              invoice_items JSONB[],
               amount DOUBLE PRECISION NOT NULL DEFAULT 0,
               balance DOUBLE PRECISION NOT NULL DEFAULT 0,
               due_date TIMESTAMP,

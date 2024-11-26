@@ -11,7 +11,7 @@ import {
 import { Invoice } from 'src/invoices/entities/invoice.entity';
 import { TransactionType } from 'src/transaction-types/entities/transaction-type.entity';
 import { User } from 'src/users/entities/user.entity';
-import { TransactionStatus } from '../transactions.interfaces';
+import { ETransactionStatus } from '../transactions.types';
 
 @Table({
   tableName: 'transactions',
@@ -29,17 +29,17 @@ export class Transaction extends Model {
   @Column
   userId: number;
 
-  @Column
+  @Column(DataType.DATE)
   date: Date;
 
   @Column(DataType.FLOAT)
   amount: number;
 
   @Default(0)
-  @Column
+  @Column(DataType.INTEGER)
   displayIndex: number;
 
-  @Column
+  @Column(DataType.BOOLEAN)
   isPartOfInvoice: boolean;
 
   @AllowNull
@@ -48,14 +48,14 @@ export class Transaction extends Model {
 
   @Column(
     DataType.ENUM(
-      TransactionStatus.COMPLETED,
-      TransactionStatus.PROCESSING,
-      TransactionStatus.ON_HOLD,
-      TransactionStatus.FAILED,
-      TransactionStatus.CANCELLED,
+      ETransactionStatus.COMPLETED,
+      ETransactionStatus.PROCESSING,
+      ETransactionStatus.ON_HOLD,
+      ETransactionStatus.FAILED,
+      ETransactionStatus.CANCELLED,
     ),
   )
-  status: TransactionStatus;
+  status: ETransactionStatus;
 
   // Relations
 

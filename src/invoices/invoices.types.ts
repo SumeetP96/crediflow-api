@@ -5,3 +5,10 @@ export enum EInvoiceStatus {
   ON_HOLD = 'on_hold',
   CANCELLED = 'cancelled',
 }
+
+export interface IInvoiceItem {
+  name: string;
+  quantity: number;
+  price: number;
+  amount: number;
+}

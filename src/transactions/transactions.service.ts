@@ -71,7 +71,10 @@ export class TransactionsService {
           isPartOfInvoice: false,
           ...createTransactionDto,
         },
-        options,
+        {
+          ...(options || {}),
+          transaction,
+        },
       );
 
       return newTransaction;
@@ -101,6 +104,7 @@ export class TransactionsService {
           id,
         },
         ...(options || {}),
+        transaction,
       });
 
       return this.findById(id, {
@@ -124,6 +128,7 @@ export class TransactionsService {
       await this.transactionModel.destroy({
         where: { id },
         ...(options || {}),
+        transaction,
       });
 
       return deleteTransaction;

@@ -12,13 +12,17 @@ import { UtilsProvider } from 'src/common/utils/utils.provider';
 import { Customer } from 'src/customers/entities/customer.entity';
 import { InvoiceCategory } from 'src/invoice-categories/entities/invoice-category.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
+import {
+  ETransactionStatus,
+  ETransactionTypeId,
+} from 'src/transactions/transactions.types';
 import { User } from 'src/users/entities/user.entity';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { FindAllInvoicesSchema } from './dto/find-all-invoices.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { InvoiceRelation } from './entities/invoice-relations.entity';
 import { Invoice } from './entities/invoice.entity';
-import { EInvoiceStatus } from './invoices.types';
+import { EInvoiceStatus, IInvoiceItem } from './invoices.types';
 
 @Injectable()
 export class InvoicesService {
@@ -60,24 +64,49 @@ export class InvoicesService {
     createInvoiceDto: CreateInvoiceDto,
     options?: CreateOptions,
   ): Promise<Invoice> {
-    return await this.sequelize.transaction(async () => {
-      const { relatedCustomerIds, relatedAgentIds, ...invoiceDtoData } =
-        createInvoiceDto;
+    return await this.sequelize.transaction(async (transaction) => {
+      const {
+        customerRelationIds,
+        agentRelationIds,
+        invoiceItems,
+        discount,
+        payment,
+        date,
+        ...invoiceDtoData
+      } = createInvoiceDto;
+
+      const invItems: IInvoiceItem[] = invoiceItems
+        .filter((item) => !!item.name)
+        .map((item) => {
+          return {
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            amount: item.amount,
+          };
+        });
 
       // Create new invoice
       const newInvoice = await this.invoiceModel.create(
         {
           ...invoiceDtoData,
+          date: this.utilsProvider.date.dayjs(date, 'DD-MM-YYYY').toISOString(),
+          dueDate: null,
+          invoiceItems: invItems,
           userId,
           balance: invoiceDtoData.amount,
           status: EInvoiceStatus.UNPAID,
         },
-        options,
+        {
+          ...(options || {}),
+          transaction,
+        },
       );
 
       // Increment invoice counter if catogory has `isAutoIncrement` enabled
       const invoiceCategory = await this.invoiceCategoryModel.findByPk(
         invoiceDtoData.invoiceCategoryId,
+        { transaction },
       );
 
       if (invoiceCategory.isAutoIncrement && invoiceCategory.nextNumber) {
@@ -89,6 +118,7 @@ export class InvoicesService {
             where: {
               id: invoiceDtoData.invoiceCategoryId,
             },
+            transaction,
           },
         );
       }
@@ -96,14 +126,51 @@ export class InvoicesService {
       // Create invoice relations
       const invoiceRelations = this.generateInvoiceRelations(
         newInvoice.id,
-        relatedCustomerIds || [],
-        relatedAgentIds || [],
+        customerRelationIds || [],
+        agentRelationIds || [],
       );
 
-      await this.invoiceRelationModel.bulkCreate(invoiceRelations);
+      await this.invoiceRelationModel.bulkCreate(invoiceRelations, {
+        transaction,
+      });
+
+      // Discount
+      if (discount > 0) {
+        await this.transactionModel.create(
+          {
+            transactionTypeId: ETransactionTypeId.DISCOUNT_ID,
+            invoiceId: newInvoice.id,
+            userId,
+            date: new Date(),
+            amount: discount,
+            isPartOfInvoice: true,
+            remarks: `Discount Applied on Invoice No: ${newInvoice.invoiceNumber}`,
+            status: ETransactionStatus.COMPLETED,
+          },
+          { transaction },
+        );
+      }
+
+      // Payment
+      if (payment > 0) {
+        await this.transactionModel.create(
+          {
+            transactionTypeId: ETransactionTypeId.PAYMENT_ID,
+            invoiceId: newInvoice.id,
+            userId,
+            date: new Date(),
+            amount: payment,
+            isPartOfInvoice: true,
+            remarks: `Payment Towards Invoice No: ${newInvoice.invoiceNumber}`,
+            status: ETransactionStatus.COMPLETED,
+          },
+          { transaction },
+        );
+      }
 
       return this.findById(newInvoice.id, {
         include: InvoiceRelation,
+        transaction,
       });
     });
   }

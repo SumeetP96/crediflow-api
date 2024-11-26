@@ -1,6 +1,6 @@
-import dayjs from 'dayjs';
 import { CookieOptions } from 'express';
 import ms, { StringValue } from 'ms';
+import { dayjs } from './date.helper';
 
 export const getOptions = (
   expiry: string | number,

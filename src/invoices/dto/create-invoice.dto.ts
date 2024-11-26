@@ -8,11 +8,24 @@ export const createInvoiceSchema = z
     invoiceNumber: z.union([z.number().int().positive(), z.string()]),
     amount: z.number(),
     dueDate: z.string().optional().nullable(),
-    relatedCustomerIds: z
+    customerRelationIds: z
       .array(z.number().int().positive())
       .optional()
       .nullable(),
-    relatedAgentIds: z.array(z.number().int().positive()).optional().nullable(),
+    agentRelationIds: z
+      .array(z.number().int().positive())
+      .optional()
+      .nullable(),
+    invoiceItems: z.array(
+      z.object({
+        name: z.string().max(50),
+        quantity: z.number().positive(),
+        price: z.number().positive(),
+        amount: z.number().positive(),
+      }),
+    ),
+    discount: z.number().positive('Should be greater than 0').safe(),
+    payment: z.number().positive('Should be greater than 0').safe(),
   })
   .required();
 

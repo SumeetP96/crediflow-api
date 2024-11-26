@@ -1,6 +1,6 @@
-import dayjs from 'dayjs';
 import snakeCase from 'lodash.snakecase';
 import sequelize, { Op, Order, WhereOptions } from 'sequelize';
+import { dayjs } from './date.helper';
 
 export type TQueryBuilderWhereFieldMatchType =
   | 'exact'

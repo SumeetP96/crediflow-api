@@ -11,8 +11,8 @@ module.exports = {
     try {
       await queryInterface.bulkInsert('transaction_types', [
         {
-          name: 'Deposit',
-          description: 'Money received',
+          name: 'Payment',
+          description: 'Payment received',
           is_deduction: false,
           status: status.active,
           created_at: new Date(),

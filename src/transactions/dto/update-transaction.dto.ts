@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TransactionStatus } from '../transactions.interfaces';
+import { ETransactionStatus } from '../transactions.types';
 
 export const updateTransactionSchema = z
   .object({
@@ -9,11 +9,11 @@ export const updateTransactionSchema = z
     amount: z.number(),
     remarks: z.string().optional().nullable(),
     status: z.enum([
-      TransactionStatus.COMPLETED,
-      TransactionStatus.PROCESSING,
-      TransactionStatus.ON_HOLD,
-      TransactionStatus.FAILED,
-      TransactionStatus.CANCELLED,
+      ETransactionStatus.COMPLETED,
+      ETransactionStatus.PROCESSING,
+      ETransactionStatus.ON_HOLD,
+      ETransactionStatus.FAILED,
+      ETransactionStatus.CANCELLED,
     ]),
   })
   .required();
