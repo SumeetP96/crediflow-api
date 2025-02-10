@@ -36,7 +36,9 @@ module.exports = {
           address: `${faker.location.streetAddress()}, ${faker.location.country()}`,
           isPrimary: primary,
           status: 'active',
-        }).replaceAll('`', '');
+        })
+          .replaceAll('`', '')
+          .replaceAll("'", '');
       };
 
       await queryInterface.bulkInsert('customers', [

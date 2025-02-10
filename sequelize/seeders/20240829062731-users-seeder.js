@@ -2,6 +2,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
+const { faker } = require('@faker-js/faker');
 
 async function hash(plaintextPassword) {
   const salt = await bcrypt.genSalt(10);
@@ -24,17 +25,17 @@ module.exports = {
   async up(queryInterface) {
     try {
       const users = [];
-      // for (let i = 0; i < 50; i++) {
-      //   users.push({
-      //     name: faker.person.fullName(),
-      //     username: faker.internet.userName(),
-      //     password: await hash('password'),
-      //     role: roles.admin,
-      //     status: status.active,
-      //     created_at: new Date(),
-      //     updated_at: new Date(),
-      //   });
-      // }
+      for (let i = 0; i < 50; i++) {
+        users.push({
+          name: faker.person.fullName().replaceAll("'", ''),
+          username: faker.internet.username().replaceAll("'", ''),
+          password: await hash('password'),
+          role: roles.admin,
+          status: status.active,
+          created_at: new Date(),
+          updated_at: new Date(),
+        });
+      }
 
       await queryInterface.bulkInsert('users', [
         {
